@@ -9,5 +9,34 @@
     Width="800"
     Height="450"
     mc:Ignorable="d">
-    <Grid />
+    <Window.DataContext>
+        <local:ViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding GitDirectory}" />
+            <Button
+                Grid.Column="1"
+                Command="{Binding BrowseForGitDirectoryCommand}"
+                Content="..." />
+        </Grid>
+        <TextBox Grid.Row="1" Text="{Binding PackageId}" />
+
+        <ListBox Grid.Row="2" ItemsSource="{Binding FilteredRepositories}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:Repository}">
+                    <TextBlock Text="{Binding RootDirectory}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 </Window>
