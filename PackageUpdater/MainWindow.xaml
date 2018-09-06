@@ -52,14 +52,20 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
+                <DataGridTemplateColumn Header="Status">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                            <TextBlock Text="{Binding UpdateProcess.Status}" ToolTip="{Binding UpdateProcess.AllOutput}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
                 <DataGridTemplateColumn Header="Update package">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:PackageUpdate}">
                             <Button
                                 Command="{Binding UpdateProcess.UpdateCommand}"
-                                Content="Update package"
-                                ToolTip="{Binding UpdateProcess.Result}"
-                                ToolTipService.ShowOnDisabled="True" />
+                                Content="Update package" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

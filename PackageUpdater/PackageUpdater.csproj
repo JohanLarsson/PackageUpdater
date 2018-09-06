@@ -57,6 +57,7 @@
     <Compile Include="Repository.cs" />
     <Compile Include="PackageUpdate.cs" />
     <Compile Include="UpdateProcess.cs" />
+    <Compile Include="UpdateStatus.cs" />
     <Compile Include="ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
