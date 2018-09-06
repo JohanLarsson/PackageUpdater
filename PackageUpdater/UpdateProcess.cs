@@ -59,9 +59,25 @@
                     WorkingDirectory = this.repository.RootDirectory.FullName,
                 },
             };
-         
+            this.Result = "Running";
+            process.EnableRaisingEvents = true;
+            process.OutputDataReceived += OnDataReceived;
+            process.ErrorDataReceived += OnDataReceived;
+            process.Exited += OnProcessOnExited;
             process.Start();
-            this.Result = process.StandardOutput.ReadToEnd() + Environment.NewLine + process.StandardError.ReadToEnd();
+
+            void OnDataReceived(object sender, DataReceivedEventArgs e)
+            {
+                this.Result += e.Data;
+            }
+
+            void OnProcessOnExited(object sender, EventArgs args)
+            {
+                this.Result = process.StandardOutput.ReadToEnd() + Environment.NewLine + process.StandardError.ReadToEnd();
+                process.OutputDataReceived -= OnDataReceived;
+                process.ErrorDataReceived -= OnDataReceived;
+                process.Exited -= OnProcessOnExited;
+            }
         }
     }
 }
