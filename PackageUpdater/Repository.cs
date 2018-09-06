@@ -1,9 +1,11 @@
 ﻿namespace PackageUpdater
 {
+    using System.ComponentModel;
     using System.IO;
     using System.Linq;
+    using System.Runtime.CompilerServices;
 
-    public class Repository
+    public class Repository : INotifyPropertyChanged
     {
         public Repository(FileInfo sln, FileInfo dependencies, FileInfo lockFile, FileInfo paketExe)
         {
@@ -12,6 +14,8 @@
             this.LockFile = lockFile;
             this.PaketExe = paketExe;
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public FileInfo Sln { get; }
 
@@ -22,6 +26,19 @@
         public FileInfo PaketExe { get; }
 
         public DirectoryInfo RootDirectory => this.Sln.Directory;
+
+        public DirectoryInfo DotVsDirectory
+        {
+            get
+            {
+                if (this.RootDirectory.EnumerateDirectories(".vs").FirstOrDefault() is DirectoryInfo dir)
+                {
+                    return dir;
+                }
+
+                return null;
+            }
+        }
 
         public static bool TryCreate(string directory, out Repository repository)
         {
@@ -37,6 +54,11 @@
 
             repository = null;
             return false;
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

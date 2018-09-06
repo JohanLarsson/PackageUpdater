@@ -49,13 +49,13 @@
 
                 this.packageId = value;
                 this.OnPropertyChanged();
-                this.UpdateFiltered();
+                this.UpdateWithPackage();
             }
         }
 
         public ObservableCollection<Repository> AllRepositories { get; } = new ObservableCollection<Repository>();
 
-        public ObservableCollection<Repository> FilteredRepositories { get; } = new ObservableCollection<Repository>();
+        public ObservableCollection<PackageUpdate> PackageUpdates { get; } = new ObservableCollection<PackageUpdate>();
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -86,15 +86,15 @@
                 }
             }
 
-            this.UpdateFiltered();
+            this.UpdateWithPackage();
         }
 
-        private void UpdateFiltered()
+        private void UpdateWithPackage()
         {
-            this.FilteredRepositories.Clear();
+            this.PackageUpdates.Clear();
             foreach (var repository in this.AllRepositories)
             {
-                this.FilteredRepositories.Add(repository);
+                this.PackageUpdates.Add(new PackageUpdate(repository, this.packageId));
             }
         }
     }

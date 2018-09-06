@@ -31,12 +31,46 @@
         </Grid>
         <TextBox Grid.Row="1" Text="{Binding PackageId}" />
 
-        <ListBox Grid.Row="2" ItemsSource="{Binding FilteredRepositories}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type local:Repository}">
-                    <TextBlock Text="{Binding RootDirectory}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <DataGrid
+            Grid.Row="2"
+            HorizontalContentAlignment="Stretch"
+            AutoGenerateColumns="False"
+            ItemsSource="{Binding PackageUpdates}">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Sln" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                            <TextBlock Text="">
+                                <Hyperlink NavigateUri="{Binding Repository.Sln.FullName}" RequestNavigate="OnRequestNavigate">
+                                    <Hyperlink.Inlines>
+                                        <Run Text="{Binding Repository.Sln.FullName, Mode=OneWay}"  />
+                                    </Hyperlink.Inlines>
+                                </Hyperlink>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Update package">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:PackageUpdate}" >
+                            <Button
+                                Command="{Binding UpdateCommand}"
+                                Content="Update package" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Delete .vs">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:PackageUpdate}" >
+                            <Button
+                                Command="{Binding DeleteDotVsFolderCommand}"
+                                Content="Update package" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Window>
