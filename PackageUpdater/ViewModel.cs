@@ -3,6 +3,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
@@ -15,6 +16,31 @@
         public ViewModel()
         {
             this.BrowseForGitDirectoryCommand = new RelayCommand(_ => this.BrowseForGitDirectory());
+            this.UpdateAllCommand = new RelayCommand(
+                _ => this.UpdateAll(),
+                _ => this.PackageUpdates.Any());
+            this.DeleteAllDotVsFolderCommand = new RelayCommand(
+                _ => this.DeleteAll(),
+                _ => this.AllRepositories.Any());
+        }
+
+        private void DeleteAll()
+        {
+            foreach (var repository in this.AllRepositories)
+            {
+                repository.DeleteDotVsFolderCommand.Execute(null);
+            }
+        }
+
+        private void UpdateAll()
+        {
+            foreach (var command in this.PackageUpdates.Select(x => x.UpdateProcess.UpdateCommand))
+            {
+                if (command.CanExecute(null))
+                {
+                    command.Execute(null);
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -36,7 +62,7 @@
                 this.UpdateRepositories();
             }
         }
-        
+
         public string PackageId
         {
             get => this.packageId;
@@ -56,6 +82,10 @@
         public ObservableCollection<Repository> AllRepositories { get; } = new ObservableCollection<Repository>();
 
         public ObservableCollection<PackageUpdate> PackageUpdates { get; } = new ObservableCollection<PackageUpdate>();
+
+        public ICommand UpdateAllCommand { get; }
+
+        public ICommand DeleteAllDotVsFolderCommand { get; }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

@@ -17,6 +17,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -66,11 +67,26 @@
                 <DataGridTemplateColumn Header="Delete .vs">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <Button Command="{Binding DeleteDotVsFolderCommand}" Content="Delete .vs" />
+                            <Button Command="{Binding Repository.DeleteDotVsFolderCommand}" Content="Delete .vs" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Grid.Column="1"
+                Command="{Binding UpdateAllCommand}"
+                Content="Update all" />
+            <Button
+                Grid.Column="2"
+                Command="{Binding DeleteAllDotVsFolderCommand}"
+                Content="Delete all .vs" />
+        </Grid>
     </Grid>
 </Window>

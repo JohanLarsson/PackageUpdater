@@ -4,6 +4,7 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Windows.Input;
 
     public class Repository : INotifyPropertyChanged
     {
@@ -13,6 +14,9 @@
             this.Dependencies = dependencies;
             this.LockFile = lockFile;
             this.PaketExe = paketExe;
+            this.DeleteDotVsFolderCommand = new RelayCommand(
+                _ => this.DeleteDotVs(),
+                _ => this.DotVsDirectory != null);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -26,6 +30,8 @@
         public FileInfo PaketExe { get; }
 
         public DirectoryInfo RootDirectory => this.Sln.Directory;
+
+        public ICommand DeleteDotVsFolderCommand { get; }
 
         public DirectoryInfo DotVsDirectory
         {
@@ -46,7 +52,7 @@
                 Directory.EnumerateFiles(directory, "paket.dependencies").FirstOrDefault() is string dependencies &&
                 Directory.EnumerateFiles(directory, "paket.lock").FirstOrDefault() is string lockFile &&
                 Directory.EnumerateDirectories(directory, ".paket").FirstOrDefault() is string paketDir &&
-                Directory.EnumerateFiles(paketDir,"paket.exe").FirstOrDefault() is string paketExe)
+                Directory.EnumerateFiles(paketDir, "paket.exe").FirstOrDefault() is string paketExe)
             {
                 repository = new Repository(new FileInfo(sln), new FileInfo(dependencies), new FileInfo(lockFile), new FileInfo(paketExe));
                 return true;
@@ -59,6 +65,19 @@
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void DeleteDotVs()
+        {
+            try
+            {
+                this.DotVsDirectory?.Delete(true);
+                this.OnPropertyChanged(nameof(this.DotVsDirectory));
+            }
+            catch
+            {
+                // just swallowing
+            }
         }
     }
 }
