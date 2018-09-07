@@ -11,7 +11,9 @@
     public class ViewModel : INotifyPropertyChanged
     {
         private string gitDirectory;
+        private string @group;
         private string packageId;
+        private PackageUpdate selectedPackage;
 
         public ViewModel()
         {
@@ -63,6 +65,22 @@
             }
         }
 
+        public string Group
+        {
+            get => this.@group;
+            set
+            {
+                if (value == this.@group)
+                {
+                    return;
+                }
+
+                this.@group = value;
+                this.OnPropertyChanged();
+                this.UpdateWithPackage();
+            }
+        }
+
         public string PackageId
         {
             get => this.packageId;
@@ -76,6 +94,21 @@
                 this.packageId = value;
                 this.OnPropertyChanged();
                 this.UpdateWithPackage();
+            }
+        }
+
+        public PackageUpdate SelectedPackage
+        {
+            get => this.selectedPackage;
+            set
+            {
+                if (ReferenceEquals(value, this.selectedPackage))
+                {
+                    return;
+                }
+
+                this.selectedPackage = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -124,7 +157,10 @@
             this.PackageUpdates.Clear();
             foreach (var repository in this.AllRepositories)
             {
-                this.PackageUpdates.Add(new PackageUpdate(repository, this.packageId));
+                if (PackageUpdate.TryCreate(repository, this.@group, this.packageId, out var update))
+                {
+                    this.PackageUpdates.Add(update);
+                }
             }
         }
     }

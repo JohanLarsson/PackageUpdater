@@ -56,6 +56,7 @@
     <Compile Include="RelayCommand.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="PackageUpdate.cs" />
+    <Compile Include="StringToVisibilityConverter.cs" />
     <Compile Include="UpdateProcess.cs" />
     <Compile Include="UpdateStatus.cs" />
     <Compile Include="ViewModel.cs" />
@@ -85,6 +86,7 @@
     <Analyzer Include="..\packages\PropertyChangedAnalyzers.2.5.12.5\analyzers\dotnet\cs\Gu.Roslyn.AnalyzerExtensions.dll" />
     <Analyzer Include="..\packages\PropertyChangedAnalyzers.2.5.12.5\analyzers\dotnet\cs\Gu.Roslyn.CodeFixExtensions.dll" />
     <Analyzer Include="..\packages\PropertyChangedAnalyzers.2.5.12.5\analyzers\dotnet\cs\PropertyChangedAnalyzers.dll" />
+    <Analyzer Include="..\packages\WpfAnalyzers.2.1.7.1\analyzers\dotnet\cs\WpfAnalyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

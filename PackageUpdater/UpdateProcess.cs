@@ -15,18 +15,24 @@
         private string error;
         private UpdateStatus status = UpdateStatus.Waiting;
 
-        public UpdateProcess(Repository repository, string package)
+        public UpdateProcess(Repository repository, string group, string package)
         {
             this.repository = repository;
+            this.Group = group;
+            this.Package = package;
+
             this.UpdateCommand = new RelayCommand(
                 _ => this.Run(),
-                _ => this.allOutput == null && !string.IsNullOrWhiteSpace(package));
-            this.Package = package;
+                _ => this.allOutput == null &&
+                     !string.IsNullOrWhiteSpace(group) &&
+                     !string.IsNullOrWhiteSpace(package));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand UpdateCommand { get; }
+        
+        public string Group { get; }
 
         public string Package { get; }
 
@@ -98,10 +104,23 @@
         [SuppressMessage("ReSharper", "AccessToDisposedClosure")]
         private void Run()
         {
+            var args = "update";
+            if (!string.IsNullOrWhiteSpace(this.Group))
+            {
+                args += $" --group {this.Group}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.Package))
+            {
+                args += " " + this.Package;
+            }
+
             var process = new Process
             {
-                StartInfo = new ProcessStartInfo(this.repository.PaketExe.FullName, $" update {this.Package}")
+
+                StartInfo = new ProcessStartInfo(this.repository.PaketExe.FullName)
                 {
+                    Arguments = args,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -131,7 +150,7 @@
                 this.AllOutput += e.Data;
             }
 
-            void OnProcessOnExited(object sender, EventArgs args)
+            void OnProcessOnExited(object sender, EventArgs e)
             {
                 process.Exited -= OnProcessOnExited;
                 this.Output = process.StandardOutput.ReadToEnd();

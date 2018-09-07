@@ -16,7 +16,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition Height="Auto" MinHeight="200"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid>
@@ -30,13 +31,25 @@
                 Command="{Binding BrowseForGitDirectoryCommand}"
                 Content="..." />
         </Grid>
-        <TextBox Grid.Row="1" Text="{Binding PackageId}" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" MinWidth="50" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Group" />
+            <TextBox Grid.Column="1" Text="{Binding Group, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+            <TextBlock Grid.Column="2" Text="Package" />
+            <TextBox Grid.Column="3" Text="{Binding PackageId, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+        </Grid>
 
         <DataGrid
             Grid.Row="2"
             HorizontalContentAlignment="Stretch"
             AutoGenerateColumns="False"
-            ItemsSource="{Binding PackageUpdates}">
+            ItemsSource="{Binding PackageUpdates}"
+            SelectedItem="{Binding SelectedPackage}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="*" Header="Sln">
                     <DataGridTemplateColumn.CellTemplate>
@@ -63,9 +76,7 @@
                 <DataGridTemplateColumn Header="Update package">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <Button
-                                Command="{Binding UpdateProcess.UpdateCommand}"
-                                Content="Update package" />
+                            <Button Command="{Binding UpdateProcess.UpdateCommand}" Content="Update package" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -79,6 +90,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -93,6 +105,18 @@
                 Grid.Column="2"
                 Command="{Binding DeleteAllDotVsFolderCommand}"
                 Content="Delete all .vs" />
+        </Grid>
+        <Grid Grid.Row="4">
+            <TextBox VerticalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                IsReadOnlyCaretVisible="True"
+                Text="{Binding SelectedPackage.UpdateProcess.Output, Mode=OneWay}"
+                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
+            <TextBox VerticalScrollBarVisibility="Auto"
+                IsReadOnly="True"
+                IsReadOnlyCaretVisible="True"
+                Text="{Binding SelectedPackage.UpdateProcess.Error, Mode=OneWay}" 
+                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
         </Grid>
     </Grid>
 </Window>
