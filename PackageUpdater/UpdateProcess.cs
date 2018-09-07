@@ -159,13 +159,22 @@
                 {
                     this.Status = UpdateStatus.Error;
                 }
-                else if (this.output is string text && text.Contains("Downloaded"))
+                else if(this.output is string text )
                 {
-                    this.Status = UpdateStatus.Success;
+                    if (text.Contains("paket.lock is already up-to-date"))
+                    {
+                        this.Status = UpdateStatus.NoChange;
+                    }
+                    else if (text.Contains("Locked version resolution written to"))
+                    {
+                        this.Status = UpdateStatus.Success;
+                    }
+
+                    this.Status = UpdateStatus.Error;
                 }
                 else
                 {
-                    this.Status = UpdateStatus.NoChange;
+                    this.Status = UpdateStatus.Error;
                 }
 
                 this.AllOutput = this.output + Environment.NewLine + this.error;

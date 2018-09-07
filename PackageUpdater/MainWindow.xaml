@@ -16,7 +16,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MinHeight="200"/>
+            <RowDefinition Height="Auto" MinHeight="200" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -107,15 +107,17 @@
                 Content="Delete all .vs" />
         </Grid>
         <Grid Grid.Row="4">
-            <TextBox VerticalScrollBarVisibility="Auto"
+            <TextBox
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
                 Text="{Binding SelectedPackage.UpdateProcess.Output, Mode=OneWay}"
+                VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
-            <TextBox VerticalScrollBarVisibility="Auto"
+            <TextBox
                 IsReadOnly="True"
                 IsReadOnlyCaretVisible="True"
-                Text="{Binding SelectedPackage.UpdateProcess.Error, Mode=OneWay}" 
+                Text="{Binding SelectedPackage.UpdateProcess.Error, Mode=OneWay}"
+                VerticalScrollBarVisibility="Auto"
                 Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
         </Grid>
     </Grid>
