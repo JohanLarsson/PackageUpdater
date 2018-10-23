@@ -30,7 +30,7 @@
         {
             foreach (var repository in this.AllRepositories)
             {
-                repository.DeleteDotVsFolderCommand.Execute(null);
+                repository.CleanCommand.Execute(null);
             }
         }
 

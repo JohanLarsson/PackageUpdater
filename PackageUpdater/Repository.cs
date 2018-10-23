@@ -1,6 +1,9 @@
 ﻿namespace PackageUpdater
 {
+    using System;
     using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -14,9 +17,10 @@
             this.Dependencies = dependencies;
             this.LockFile = lockFile;
             this.PaketExe = paketExe;
-            this.DeleteDotVsFolderCommand = new RelayCommand(
-                _ => this.DeleteDotVs(),
+            this.CleanCommand = new RelayCommand(
+                _ => this.Clean(),
                 _ => this.DotVsDirectory != null);
+            this.RestoreCommand = new RelayCommand(_ => this.Restore(), _ => true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,7 +35,9 @@
 
         public DirectoryInfo RootDirectory => this.Sln.Directory;
 
-        public ICommand DeleteDotVsFolderCommand { get; }
+        public ICommand CleanCommand { get; }
+
+        public ICommand RestoreCommand { get; }
 
         public DirectoryInfo DotVsDirectory
         {
@@ -67,17 +73,49 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void DeleteDotVs()
+        private void Clean()
         {
             try
             {
                 this.DotVsDirectory?.Delete(true);
+                if (this.Sln.Directory is DirectoryInfo dir)
+                {
+                    foreach (var csproj in dir.EnumerateFiles("*.csproj", SearchOption.AllDirectories))
+                    {
+                        if (csproj.DirectoryName is string directoryName)
+                        {
+                            Directory.Delete(Path.Combine(directoryName, "bin"));
+                            Directory.Delete(Path.Combine(directoryName, "obj"));
+                        }
+                    }
+                }
+
+
                 this.OnPropertyChanged(nameof(this.DotVsDirectory));
             }
             catch
             {
                 // just swallowing
             }
+        }
+
+        private void Restore()
+        {
+            var process = new Process
+            {
+
+                StartInfo = new ProcessStartInfo("CMD.exe")
+                {
+                    Arguments = "dotnet restore",
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = this.Sln.DirectoryName,
+                },
+            };
+
+            process.Start();
         }
     }
 }

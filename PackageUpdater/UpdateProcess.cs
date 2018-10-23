@@ -24,7 +24,7 @@
             this.UpdateCommand = new RelayCommand(
                 _ => this.Run(),
                 _ => this.allOutput == null &&
-                     !string.IsNullOrWhiteSpace(group) &&
+                     !string.IsNullOrWhiteSpace(group) ||
                      !string.IsNullOrWhiteSpace(package));
         }
 

@@ -81,10 +81,18 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Delete .vs">
+                <DataGridTemplateColumn Header="Clean">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <Button Command="{Binding Repository.DeleteDotVsFolderCommand}" Content="Delete .vs" />
+                            <Button Command="{Binding Repository.CleanCommand}" Content="Clean" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Restore">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                            <Button Command="{Binding Repository.RestoreCommand}" Content="Restore" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
