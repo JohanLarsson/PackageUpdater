@@ -84,6 +84,7 @@
     <Compile Include="Wpf\BooleanToBrushConverter.cs" />
     <Compile Include="Wpf\BooleanToPathConverter.cs" />
     <Compile Include="Wpf\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Wpf\BoolTemplateSelector.cs" />
     <Compile Include="Wpf\RelayCommand.cs" />
     <Compile Include="Wpf\StatusTemplateSelector.cs" />
     <Compile Include="Wpf\StringToVisibilityConverter.cs" />

@@ -7,9 +7,14 @@
     public class StatusTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Waiting { get; set; }
+       
         public DataTemplate Running { get; set; }
-        public DataTemplate Waiting { get; set; }
-        public DataTemplate Waiting { get; set; }
+        
+        public DataTemplate NoChange { get; set; }
+        
+        public DataTemplate Error { get; set; }
+        
+        public DataTemplate Success { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -18,20 +23,21 @@
                 switch (status)
                 {
                     case Status.Waiting:
-                        return Waiting;
-                        break;
+                        return this.Waiting;
                     case Status.Running:
-                        break;
+                        return this.Running;
                     case Status.NoChange:
-                        break;
+                        return this.NoChange;
                     case Status.Error:
-                        break;
+                        return this.Error;
                     case Status.Success:
-                        break;
+                        return this.Success;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
+
+            return base.SelectTemplate(item, container);
         }
     }
 }
