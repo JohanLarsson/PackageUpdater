@@ -1,34 +1,84 @@
 ﻿namespace PackageUpdater
 {
-    public class RepositoryPackageUpdate
+    using System;
+    using System.ComponentModel;
+    using System.Reactive.Linq;
+    using System.Runtime.CompilerServices;
+    using Gu.Reactive;
+
+    public sealed class RepositoryPackageUpdate : INotifyPropertyChanged, IDisposable
     {
-        public Repository Repository { get; }
+        private readonly SerialDisposable<BatchProcess> process = new SerialDisposable<BatchProcess>();
+        private readonly IDisposable disposable;
+        private bool disposed;
 
-        public BatchProcess Process { get; }
-
-        private RepositoryPackageUpdate(Repository repository, BatchProcess process)
+        public RepositoryPackageUpdate(Repository repository, UpdatePackageViewModel updatePackageViewModel)
         {
             this.Repository = repository;
-            this.Process = process;
+            this.disposable = Observable.Merge(
+                    updatePackageViewModel.ObservePropertyChangedSlim(x => x.PackageId),
+                    updatePackageViewModel.ObservePropertyChangedSlim(x => x.Group))
+                .Subscribe(_ =>
+                {
+                    if (PaketUpdate.TryCreate(repository, updatePackageViewModel.PackageId, updatePackageViewModel.Group, out var update))
+                    {
+                        this.Process = new BatchProcess(
+                            new GitAssertEmptyDiff(repository.GitDirectory),
+                            new GitAssertIsOnMaster(repository.GitDirectory),
+                            new GitFetchOrigin(repository.GitDirectory),
+                            update,
+                            new GitCleanDxf(repository.GitDirectory),
+                            new DotnetRestore(repository.GitDirectory));
+                    }
+                    else
+                    {
+                        this.Process = null;
+                    }
+                });
         }
-        public static bool TryCreate(Repository repository, string @group, string packageId, out RepositoryPackageUpdate result)
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public Repository Repository { get; }
+
+        public BatchProcess Process
         {
-            if (PaketUpdate.TryCreate(repository, group, packageId, out var update))
+            get => this.process.Disposable;
+            set
             {
-                result = new RepositoryPackageUpdate(
-                    repository,
-                    new BatchProcess(
-                        new GitAssertEmptyDiff(repository.GitDirectory),
-                        new GitAssertIsOnMaster(repository.GitDirectory),
-                        new GitFetchOrigin(repository.GitDirectory),
-                        update,
-                        new GitCleanDxf(repository.GitDirectory),
-                        new DotnetRestore(repository.GitDirectory)));
-                return true;
+                if (ReferenceEquals(value, this.process.Disposable))
+                {
+                    return;
+                }
+
+                this.process.Disposable = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
             }
 
-            result = null;
-            return false;
+            this.disposed = true;
+            this.process.Dispose();
+            this.disposable?.Dispose();
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(this.GetType().FullName);
+            }
         }
     }
 }

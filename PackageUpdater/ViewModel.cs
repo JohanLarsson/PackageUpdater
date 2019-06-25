@@ -7,20 +7,22 @@
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
+    using Gu.Wpf.Reactive;
 
-    public class ViewModel : INotifyPropertyChanged
+    public sealed class ViewModel : INotifyPropertyChanged, System.IDisposable
     {
         private readonly ObservableCollection<Repository> allRepositories = new ObservableCollection<Repository>();
         private string gitDirectory;
+        private bool disposed;
 
         public ViewModel()
         {
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
-            this.UpdatePackage = new UpdatePackageViewModel(this.allRepositories);
-            this.BrowseForGitDirectoryCommand = new RelayCommand(_ => this.BrowseForGitDirectory());
+            this.UpdatePackage = new UpdatePackageViewModel(this.AllRepositories);
+            this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
             this.CleanAllCommand = new RelayCommand(
-                _ => this.DeleteAll(),
-                _ => this.AllRepositories.Any());
+                () => this.DeleteAll(),
+                () => this.AllRepositories.Any());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -51,7 +53,19 @@
 
         public DebugViewModel Debug { get; } = new DebugViewModel();
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            this.UpdatePackage.Dispose();
+            this.Debug?.Dispose();
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -89,8 +103,6 @@
                     }
                 }
             }
-
-            this.UpdatePackage.Update();
         }
 
         private void DeleteAll()
@@ -98,6 +110,14 @@
             foreach (var repository in this.AllRepositories)
             {
                 repository.CleanCommand.Execute(null);
+            }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new System.ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

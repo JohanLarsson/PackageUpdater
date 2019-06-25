@@ -6,12 +6,14 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Gu.Wpf.Reactive;
 
-    public class BatchProcess : INotifyPropertyChanged
+    public sealed class BatchProcess : INotifyPropertyChanged, IDisposable
     {
         private AbstractProcess current;
         private Exception exception;
         private Status status = Status.Waiting;
+        private bool disposed;
 
         public BatchProcess(params AbstractProcess[] steps)
         {
@@ -97,9 +99,28 @@
             this.Status = Status.Success;
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            (this.StartCommand as IDisposable)?.Dispose();
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(this.GetType().FullName);
+            }
         }
     }
 }

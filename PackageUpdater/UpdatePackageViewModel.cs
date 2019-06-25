@@ -1,28 +1,34 @@
 ﻿namespace PackageUpdater
 {
-    using System.Collections.Generic;
+    using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Linq;
+    using System.Reactive.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Gu.Reactive;
+    using Gu.Wpf.Reactive;
 
-    public class UpdatePackageViewModel : INotifyPropertyChanged
+    public sealed class UpdatePackageViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly ObservableCollection<RepositoryPackageUpdate> packageUpdates = new ObservableCollection<RepositoryPackageUpdate>();
-        private readonly IEnumerable<Repository> repositories;
+        private readonly MappingView<Repository, RepositoryPackageUpdate> mapped;
+
         private string group;
         private string packageId;
         private RepositoryPackageUpdate selectedPackage;
+        private bool disposed;
 
-        public UpdatePackageViewModel(IEnumerable<Repository> repositories)
+        public UpdatePackageViewModel(ReadOnlyObservableCollection<Repository> repositories)
         {
-            this.repositories = repositories;
-            this.PackageUpdates = new ReadOnlyObservableCollection<RepositoryPackageUpdate>(this.packageUpdates);
-            this.UpdateAllCommand = new AsyncCommand(
-                () => this.UpdateAllAsync(),
-                () => this.PackageUpdates.Any());
+            mapped = repositories.AsMappingView(
+                x => new RepositoryPackageUpdate(x, this),
+                x => x.Dispose());
+            this.PackageUpdates = mapped.AsReadOnlyFilteredView(
+                x => x.Process != null,
+                mapped.ObserveItemPropertyChangedSlim(x => x.Process));
+            this.UpdateAllCommand = new AsyncCommand(() => this.UpdateAllAsync());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,17 +52,16 @@
 
         public string Group
         {
-            get => this.@group;
+            get => this.group;
             set
             {
-                if (value == this.@group)
+                if (value == this.group)
                 {
                     return;
                 }
 
-                this.@group = value;
+                this.group = value;
                 this.OnPropertyChanged();
-                this.Update();
             }
         }
 
@@ -72,33 +77,40 @@
 
                 this.packageId = value;
                 this.OnPropertyChanged();
-                this.Update();
             }
         }
 
-        public ReadOnlyObservableCollection<RepositoryPackageUpdate> PackageUpdates { get; }
+        public IReadOnlyView<RepositoryPackageUpdate> PackageUpdates { get; }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            (this.UpdateAllCommand as System.IDisposable)?.Dispose();
+            this.PackageUpdates?.Dispose();
+            this.mapped?.Dispose();
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public void Update()
-        {
-            this.SelectedPackage = null;
-            this.packageUpdates.Clear();
-            foreach (var repository in this.repositories)
-            {
-                if (RepositoryPackageUpdate.TryCreate(repository, this.group, this.packageId, out var update))
-                {
-                    this.packageUpdates.Add(update);
-                }
-            }
         }
 
         private async Task UpdateAllAsync()
         {
             await Task.WhenAll(this.PackageUpdates.Select(x => x.Process.RunAsync()));
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new System.ObjectDisposedException(this.GetType().FullName);
+            }
         }
     }
 }

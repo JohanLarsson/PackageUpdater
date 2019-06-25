@@ -7,9 +7,13 @@
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows.Input;
+    using Gu.Wpf.Reactive;
 
-    public class Repository : INotifyPropertyChanged
+    public sealed class Repository : INotifyPropertyChanged, System.IDisposable
     {
+        private bool disposed;
+        private string dependenciesContent;
+
         private Repository(DirectoryInfo gitDirectory, FileInfo dependencies, FileInfo lockFile, FileInfo paketExe)
         {
             this.GitDirectory = gitDirectory;
@@ -17,7 +21,7 @@
             this.LockFile = lockFile;
             this.PaketExe = paketExe;
             this.SolutionFiles = new ReadOnlyObservableCollection<FileInfo>(new ObservableCollection<FileInfo>(gitDirectory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly)));
-            this.CleanCommand = new RelayCommand(_ => this.Clean());
+            this.CleanCommand = new RelayCommand(() => this.Clean());
             this.DotnetRestore = new DotnetRestore(this.GitDirectory);
             this.EmptyDiff = new GitAssertEmptyDiff(this.GitDirectory);
             this.IsOnMaster = new GitAssertIsOnMaster(this.GitDirectory);
@@ -43,6 +47,8 @@
         public ReadOnlyObservableCollection<FileInfo> SolutionFiles { get; }
 
         public FileInfo Dependencies { get; }
+
+        public string DependenciesContent  => this.dependenciesContent ?? (this.dependenciesContent = File.ReadAllText(this.Dependencies.FullName));
 
         public FileInfo LockFile { get; }
 
@@ -71,7 +77,20 @@
             return false;
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public void Dispose()
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            this.DotnetRestore.Dispose();
+            this.EmptyDiff.Dispose();
+            this.IsOnMaster.Dispose();
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -100,6 +119,14 @@
             catch
             {
                 // just swallowing
+            }
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new System.ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

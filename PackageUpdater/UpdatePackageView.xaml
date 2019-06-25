@@ -51,7 +51,7 @@
                     <GridViewColumn Header="Status">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
-                                <ItemsControl  ItemsSource="{Binding Process.Steps}">
+                                <ItemsControl ItemsSource="{Binding Process.Steps}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <StackPanel Orientation="Horizontal" />
@@ -60,13 +60,9 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type local:AbstractProcess}">
                                             <Border Height="10"
-                                                    Background="Transparent" Margin="2,0">
-                                                <Border.ToolTip>
-                                                    <MultiBinding StringFormat="{}{0} {1}">
-                                                        <Binding Path="Exe" />
-                                                        <Binding Path="Arguments" />
-                                                    </MultiBinding>
-                                                </Border.ToolTip>
+                                                    Margin="2,0"
+                                                    Background="Transparent"
+                                                    ToolTip="{Binding DisplayText}">
                                                 <ContentPresenter Content="{Binding Status}">
                                                     <ContentPresenter.ContentTemplateSelector>
                                                         <local:StatusTemplateSelector>
@@ -78,7 +74,7 @@
 
                                                             <local:StatusTemplateSelector.Running>
                                                                 <DataTemplate>
-                                                                    <Path Data="{StaticResource PlayGeometry}"
+                                                                    <Path Data="{StaticResource RecycleGeometry}"
                                                                           Fill="{StaticResource GreenBrush}"
                                                                           Style="{StaticResource IconPathStyle}" />
                                                                 </DataTemplate>
@@ -125,10 +121,16 @@
                                     <Button.Template>
                                         <ControlTemplate TargetType="{x:Type Button}">
                                             <Border Background="Transparent">
-                                                <Path Data="{StaticResource PlayGeometry}"
+                                                <Path x:Name="Path"
+                                                      Data="{StaticResource PlayGeometry}"
                                                       Fill="{StaticResource GreenBrush}"
                                                       Style="{StaticResource IconPathStyle}" />
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="Path" Property="Data" Value="{StaticResource RecycleGeometry}" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Button.Template>
                                 </Button>
@@ -143,14 +145,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Button Grid.Column="1"
                     Command="{Binding UpdateAllCommand}"
                     Content="Update all" />
-            <Button Grid.Column="2"
-                    Command="{Binding DeleteAllDotVsFolderCommand}"
-                    Content="Delete all .vs" />
         </Grid>
     </Grid>
 </UserControl>

@@ -7,17 +7,24 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Windows;
+    using Gu.Reactive;
+    using Gu.Wpf.Reactive;
 
-    public abstract class AbstractProcess : INotifyPropertyChanged
+    public abstract class AbstractProcess : INotifyPropertyChanged, IDisposable
     {
+        private readonly SerialDisposable<Process> serialDisposable = new SerialDisposable<Process>();
+        private Exception exception;
         private Status status = Status.Waiting;
+        private bool disposed;
 
         protected AbstractProcess(string exe, string arguments, DirectoryInfo workingDirectory)
         {
             this.Exe = exe;
             this.Arguments = arguments;
+            this.DisplayText = Regex.Match(exe,"(?<name>\\w+)\\.exe").Groups["name"].Value + (string.IsNullOrWhiteSpace(arguments) ? string.Empty : $" {arguments}");
             this.WorkingDirectory = workingDirectory;
             this.StartCommand = new AsyncCommand(() => this.RunAsync());
         }
@@ -28,6 +35,8 @@
 
         public string Arguments { get; }
 
+        public string DisplayText { get; }
+
         public DirectoryInfo WorkingDirectory { get; }
 
         public AsyncCommand StartCommand { get; }
@@ -35,6 +44,21 @@
         public ObservableCollection<DataReceivedEventArgs> Datas { get; } = new ObservableCollection<DataReceivedEventArgs>();
 
         public ObservableCollection<DataReceivedEventArgs> Errors { get; } = new ObservableCollection<DataReceivedEventArgs>();
+
+        public Exception Exception
+        {
+            get => this.exception;
+            set
+            {
+                if (ReferenceEquals(value, this.exception))
+                {
+                    return;
+                }
+
+                this.exception = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public Status Status
         {
@@ -55,6 +79,7 @@
         {
             var tcs = new TaskCompletionSource<bool>();
             this.Status = Status.Running;
+            this.Exception = null;
             this.Datas.Clear();
             this.Errors.Clear();
             var process = new Process
@@ -75,19 +100,36 @@
             process.OutputDataReceived += OnDataReceived;
             process.ErrorDataReceived += OnErrorReceived;
             process.Exited += OnProcessOnExited;
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            try
+            {
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                this.serialDisposable.Disposable = process;
+            }
+            catch (Exception e)
+            {
+                this.Exception = e;
+                this.Status = Status.Error;
+                this.serialDisposable.Disposable = null;
+            }
+
             return tcs.Task;
 
             void OnDataReceived(object sender, DataReceivedEventArgs e)
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Datas.Add(e)));
+                if (e.Data != null)
+                {
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Datas.Add(e)));
+                }
             }
 
             void OnErrorReceived(object sender, DataReceivedEventArgs e)
             {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Errors.Add(e)));
+                if (e.Data != null)
+                {
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Errors.Add(e)));
+                }
             }
 
             void OnProcessOnExited(object sender, EventArgs e)
@@ -95,7 +137,7 @@
                 process.OutputDataReceived -= OnDataReceived;
                 process.ErrorDataReceived -= OnErrorReceived;
                 process.Exited -= OnProcessOnExited;
-                process.Dispose();
+                this.serialDisposable.Disposable = null;
                 // Huge hack below to make sure all events are in collections before exiting.
                 Application.Current.Dispatcher.Invoke(() => { });
                 this.Status = this.Errors.Any() ? Status.Error : Status.Success;
@@ -103,9 +145,38 @@
             }
         }
 
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed)
+            {
+                return;
+            }
+
+            this.disposed = true;
+            if (disposing)
+            {
+                this.StartCommand.Dispose();
+                this.serialDisposable.Dispose();
+            }
+        }
+
+        protected virtual void ThrowIfDisposed()
+        {
+            if (this.disposed)
+            {
+                throw new ObjectDisposedException(this.GetType().FullName);
+            }
         }
     }
 }

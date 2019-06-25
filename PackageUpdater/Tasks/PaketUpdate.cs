@@ -2,47 +2,48 @@
 {
     using System.IO;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     public class PaketUpdate : AbstractProcess
     {
-
-        public PaketUpdate(string group, string package, DirectoryInfo directory)
-            : base(".paket\\paket.exe", $"update" + (string.IsNullOrWhiteSpace(package) ? string.Empty : $" {package}") + (string.IsNullOrWhiteSpace(group) ? string.Empty : $" --group {group}"), directory)
+        public PaketUpdate(Repository repository, string packageId, string group)
+            : base(
+                repository.PaketExe.FullName,
+                $"update" + (string.IsNullOrWhiteSpace(packageId) ? string.Empty : $" {packageId}") + (string.IsNullOrWhiteSpace(group) ? string.Empty : $" --group {group}"),
+                repository.Dependencies.Directory)
         {
+            this.PackageId = packageId;
             this.Group = group;
-            this.Package = package;
         }
+
+        public string PackageId { get; }
 
         public string Group { get; }
 
-        public string Package { get; }
-
-        public static bool TryCreate(Repository repository, string group, string packageId, out PaketUpdate update)
+        public static bool TryCreate(Repository repository, string packageId, string group, out PaketUpdate update)
         {
             if (string.IsNullOrWhiteSpace(group) && string.IsNullOrWhiteSpace(packageId))
             {
-                update = new PaketUpdate(null, null, repository.GitDirectory);
+                update = new PaketUpdate(repository, null, null);
                 return true;
             }
 
-            var deps = File.ReadAllText(repository.Dependencies.FullName);
-
             if (!string.IsNullOrWhiteSpace(group) &&
-                !deps.Contains($"group {group}"))
+                !Regex.IsMatch(repository.DependenciesContent, $"^ *group {group} *\r?\n", RegexOptions.Multiline))
             {
                 update = null;
                 return false;
             }
 
             if (!string.IsNullOrWhiteSpace(packageId) &&
-                !deps.Contains($"nuget {packageId}"))
+                !repository.DependenciesContent.Contains($"nuget {packageId}"))
             {
                 update = null;
                 return false;
             }
 
-            update = new PaketUpdate(packageId, group, repository.GitDirectory);
+            update = new PaketUpdate(repository, packageId, group);
             return true;
         }
 
