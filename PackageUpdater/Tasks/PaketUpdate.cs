@@ -6,7 +6,6 @@
 
     public class PaketUpdate : AbstractProcess
     {
-        private UpdateStatus status = UpdateStatus.Waiting;
 
         public PaketUpdate(string group, string package, DirectoryInfo directory)
             : base(".paket\\paket.exe", $"update" + (string.IsNullOrWhiteSpace(package) ? string.Empty : $" {package}") + (string.IsNullOrWhiteSpace(group) ? string.Empty : $" --group {group}"), directory)
@@ -18,21 +17,6 @@
         public string Group { get; }
 
         public string Package { get; }
-
-        public UpdateStatus Status
-        {
-            get => this.status;
-            private set
-            {
-                if (value == this.status)
-                {
-                    return;
-                }
-
-                this.status = value;
-                this.OnPropertyChanged();
-            }
-        }
 
         public static bool TryCreate(Repository repository, string group, string packageId, out PaketUpdate update)
         {
@@ -67,18 +51,15 @@
             await base.RunAsync().ConfigureAwait(false);
             if (this.Datas.Any(x => x.Data.Contains("paket.lock is already up-to-date")))
             {
-                this.Success = false;
-                this.Status = UpdateStatus.NoChange;
+                this.Status = Status.NoChange;
             }
             else if (this.Datas.Any(x => x.Data.Contains("Locked version resolution written to")))
             {
-                this.Success = true;
-                this.Status = UpdateStatus.Success;
+                this.Status = Status.Success;
             }
             else
             {
-                this.Success = false;
-                this.Status = UpdateStatus.Error;
+                this.Status = Status.Error;
             }
         }
     }

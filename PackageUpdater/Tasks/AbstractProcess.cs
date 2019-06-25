@@ -5,15 +5,14 @@
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows;
-    using System.Windows.Input;
 
     public abstract class AbstractProcess : INotifyPropertyChanged
     {
-        private bool exited;
-        private bool? success;
+        private Status status = Status.Waiting;
 
         protected AbstractProcess(string exe, string arguments, DirectoryInfo workingDirectory)
         {
@@ -31,38 +30,23 @@
 
         public DirectoryInfo WorkingDirectory { get; }
 
-        public ICommand StartCommand { get; }
+        public AsyncCommand StartCommand { get; }
 
         public ObservableCollection<DataReceivedEventArgs> Datas { get; } = new ObservableCollection<DataReceivedEventArgs>();
 
         public ObservableCollection<DataReceivedEventArgs> Errors { get; } = new ObservableCollection<DataReceivedEventArgs>();
 
-        public bool Exited
+        public Status Status
         {
-            get => this.exited;
-            set
-            {
-                if (value == this.exited)
-                {
-                    return;
-                }
-
-                this.exited = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public bool? Success
-        {
-            get => this.success;
+            get => this.status;
             protected set
             {
-                if (value == this.success)
+                if (value == this.status)
                 {
                     return;
                 }
 
-                this.success = value;
+                this.status = value;
                 this.OnPropertyChanged();
             }
         }
@@ -70,8 +54,7 @@
         public virtual Task RunAsync()
         {
             var tcs = new TaskCompletionSource<bool>();
-            this.Success = null;
-            this.Exited = false;
+            this.Status = Status.Running;
             this.Datas.Clear();
             this.Errors.Clear();
             var process = new Process
@@ -109,13 +92,13 @@
 
             void OnProcessOnExited(object sender, EventArgs e)
             {
-                this.Exited = true;
                 process.OutputDataReceived -= OnDataReceived;
                 process.ErrorDataReceived -= OnErrorReceived;
                 process.Exited -= OnProcessOnExited;
                 process.Dispose();
                 // Huge hack below to make sure all events are in collections before exiting.
                 Application.Current.Dispatcher.Invoke(() => { });
+                this.Status = this.Errors.Any() ? Status.Error : Status.Success;
                 tcs.SetResult(true);
             }
         }

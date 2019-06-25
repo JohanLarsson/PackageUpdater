@@ -3,4 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System"
              xmlns:local="clr-namespace:PackageUpdater"
-             StartupUri="MainWindow.xaml" />
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <SolidColorBrush x:Key="GreenBrush">Green</SolidColorBrush>
+        <StreamGeometry x:Key="PlayGeometry">F1M0,0L65,49 65,53 0,100 0,0z</StreamGeometry>
+        <Style x:Key="IconPathStyle" TargetType="{x:Type Path}">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Fill" Value="Black" />
+            <Setter Property="StrokeThickness" Value="0" />
+        </Style>
+    </Application.Resources>
+</Application>

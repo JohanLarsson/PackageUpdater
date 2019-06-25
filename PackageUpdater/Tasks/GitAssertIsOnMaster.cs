@@ -14,7 +14,7 @@
         public override async Task RunAsync()
         {
             await base.RunAsync().ConfigureAwait(false);
-            this.Success = this.Datas.Any(x => x.Data == "* master");
+            this.Status = this.Datas.Any(x => x.Data == "* master") ? Status.Success : Status.Error;
         }
     }
 }

@@ -81,10 +81,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Wpf\AsyncCommand.cs" />
+    <Compile Include="Wpf\BooleanToBrushConverter.cs" />
+    <Compile Include="Wpf\BooleanToPathConverter.cs" />
+    <Compile Include="Wpf\BooleanToVisibilityConverter.cs" />
     <Compile Include="Wpf\RelayCommand.cs" />
+    <Compile Include="Wpf\StatusTemplateSelector.cs" />
     <Compile Include="Wpf\StringToVisibilityConverter.cs" />
     <Compile Include="Tasks\PaketUpdate.cs" />
-    <Compile Include="Tasks\UpdateStatus.cs" />
+    <Compile Include="Tasks\Status.cs" />
     <Page Include="DebugProcessView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

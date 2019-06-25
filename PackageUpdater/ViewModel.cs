@@ -77,12 +77,14 @@
                     {
                         this.allRepositories.Add(repository);
                     }
-
-                    foreach (var nested in Directory.EnumerateDirectories(directory))
+                    else
                     {
-                        if (Repository.TryCreate(nested, out repository))
+                        foreach (var nested in Directory.EnumerateDirectories(directory))
                         {
-                            this.allRepositories.Add(repository);
+                            if (Repository.TryCreate(nested, out repository))
+                            {
+                                this.allRepositories.Add(repository);
+                            }
                         }
                     }
                 }

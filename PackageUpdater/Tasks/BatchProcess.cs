@@ -11,7 +11,7 @@
     {
         private AbstractProcess current;
         private Exception exception;
-        private bool? success;
+        private Status status = Status.Waiting;
 
         public BatchProcess(params AbstractProcess[] steps)
         {
@@ -55,24 +55,24 @@
             }
         }
 
-        public bool? Success
+        public Status Status
         {
-            get => this.success;
+            get => this.status;
             set
             {
-                if (value == this.success)
+                if (value == this.status)
                 {
                     return;
                 }
 
-                this.success = value;
+                this.status = value;
                 this.OnPropertyChanged();
             }
         }
 
         public async Task RunAsync()
         {
-            this.Success = null;
+            this.Status = Status.Running;
             this.Exception = null;
             foreach (var step in Steps)
             {
@@ -80,21 +80,21 @@
                 try
                 {
                     await step.RunAsync();
-                    if (step.Success != false)
+                    if (step.Status == Status.Error)
                     {
-                        this.Success = step.Success;
+                        this.Status = Status.Error;
                         return;
                     }
                 }
                 catch (Exception e)
                 {
-                    this.Success = false;
+                    this.Status = Status.Error;
                     this.Exception = e;
                     return;
                 }
             }
 
-            this.Success = true;
+            this.Status = Status.Success;
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
