@@ -10,39 +10,17 @@
 
     public class ViewModel : INotifyPropertyChanged
     {
+        private readonly ObservableCollection<Repository> allRepositories = new ObservableCollection<Repository>();
         private string gitDirectory;
-        private string @group;
-        private string packageId;
-        private PackageUpdate selectedPackage;
 
         public ViewModel()
         {
+            this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
+            this.UpdatePackage = new UpdatePackageViewModel(this.allRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(_ => this.BrowseForGitDirectory());
-            this.UpdateAllCommand = new RelayCommand(
-                _ => this.UpdateAll(),
-                _ => this.PackageUpdates.Any());
-            this.DeleteAllDotVsFolderCommand = new RelayCommand(
+            this.CleanAllCommand = new RelayCommand(
                 _ => this.DeleteAll(),
                 _ => this.AllRepositories.Any());
-        }
-
-        private void DeleteAll()
-        {
-            foreach (var repository in this.AllRepositories)
-            {
-                repository.CleanCommand.Execute(null);
-            }
-        }
-
-        private void UpdateAll()
-        {
-            foreach (var command in this.PackageUpdates.Select(x => x.UpdateProcess.UpdateCommand))
-            {
-                if (command.CanExecute(null))
-                {
-                    command.Execute(null);
-                }
-            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -65,60 +43,11 @@
             }
         }
 
-        public string Group
-        {
-            get => this.@group;
-            set
-            {
-                if (value == this.@group)
-                {
-                    return;
-                }
+        public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
 
-                this.@group = value;
-                this.OnPropertyChanged();
-                this.UpdateWithPackage();
-            }
-        }
+        public ICommand CleanAllCommand { get; }
 
-        public string PackageId
-        {
-            get => this.packageId;
-            set
-            {
-                if (value == this.packageId)
-                {
-                    return;
-                }
-
-                this.packageId = value;
-                this.OnPropertyChanged();
-                this.UpdateWithPackage();
-            }
-        }
-
-        public PackageUpdate SelectedPackage
-        {
-            get => this.selectedPackage;
-            set
-            {
-                if (ReferenceEquals(value, this.selectedPackage))
-                {
-                    return;
-                }
-
-                this.selectedPackage = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<Repository> AllRepositories { get; } = new ObservableCollection<Repository>();
-
-        public ObservableCollection<PackageUpdate> PackageUpdates { get; } = new ObservableCollection<PackageUpdate>();
-
-        public ICommand UpdateAllCommand { get; }
-
-        public ICommand DeleteAllDotVsFolderCommand { get; }
+        public UpdatePackageViewModel UpdatePackage { get; }
 
         public DebugViewModel Debug { get; } = new DebugViewModel();
 
@@ -138,7 +67,7 @@
 
         private void UpdateRepositories()
         {
-            this.AllRepositories.Clear();
+            this.allRepositories.Clear();
             if (this.gitDirectory is string path &&
                 Directory.Exists(path))
             {
@@ -146,23 +75,27 @@
                 {
                     if (Repository.TryCreate(directory, out var repository))
                     {
-                        this.AllRepositories.Add(repository);
+                        this.allRepositories.Add(repository);
+                    }
+
+                    foreach (var nested in Directory.EnumerateDirectories(directory))
+                    {
+                        if (Repository.TryCreate(nested, out repository))
+                        {
+                            this.allRepositories.Add(repository);
+                        }
                     }
                 }
             }
 
-            this.UpdateWithPackage();
+            this.UpdatePackage.Update();
         }
 
-        private void UpdateWithPackage()
+        private void DeleteAll()
         {
-            this.PackageUpdates.Clear();
             foreach (var repository in this.AllRepositories)
             {
-                if (PackageUpdate.TryCreate(repository, this.@group, this.packageId, out var update))
-                {
-                    this.PackageUpdates.Add(update);
-                }
+                repository.CleanCommand.Execute(null);
             }
         }
     }

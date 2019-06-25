@@ -1,4 +1,4 @@
-﻿namespace PackageUpdater.Tasks
+﻿namespace PackageUpdater
 {
     using System;
     using System.Collections.ObjectModel;
@@ -6,20 +6,32 @@
     using System.Diagnostics;
     using System.IO;
     using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Input;
 
-    public class RestoreTask : INotifyPropertyChanged
+    public abstract class AbstractProcess : INotifyPropertyChanged
     {
         private bool exited;
+        private bool? success;
 
-        public RestoreTask(DirectoryInfo directory)
+        protected AbstractProcess(string exe, string arguments, DirectoryInfo workingDirectory)
         {
-            this.Directory = directory;
+            this.Exe = exe;
+            this.Arguments = arguments;
+            this.WorkingDirectory = workingDirectory;
+            this.StartCommand = new AsyncCommand(() => this.RunAsync());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DirectoryInfo Directory { get; }
+        public string Exe { get; }
+
+        public string Arguments { get; }
+
+        public DirectoryInfo WorkingDirectory { get; }
+
+        public ICommand StartCommand { get; }
 
         public ObservableCollection<DataReceivedEventArgs> Datas { get; } = new ObservableCollection<DataReceivedEventArgs>();
 
@@ -40,8 +52,25 @@
             }
         }
 
-        public void Start()
+        public bool? Success
         {
+            get => this.success;
+            protected set
+            {
+                if (value == this.success)
+                {
+                    return;
+                }
+
+                this.success = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public virtual Task RunAsync()
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            this.Success = null;
             this.Exited = false;
             this.Datas.Clear();
             this.Errors.Clear();
@@ -49,13 +78,13 @@
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "dotnet.exe",
-                    Arguments = "restore",
+                    FileName = this.Exe,
+                    Arguments = this.Arguments,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
-                    WorkingDirectory = this.Directory.FullName,
+                    WorkingDirectory = this.WorkingDirectory.FullName,
                 },
                 EnableRaisingEvents = true,
             };
@@ -66,11 +95,7 @@
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            process.WaitForExit();
-            process.OutputDataReceived -= OnDataReceived;
-            process.ErrorDataReceived -= OnErrorReceived;
-            process.Exited -= OnProcessOnExited;
-            process.Dispose();
+            return tcs.Task;
 
             void OnDataReceived(object sender, DataReceivedEventArgs e)
             {
@@ -85,6 +110,13 @@
             void OnProcessOnExited(object sender, EventArgs e)
             {
                 this.Exited = true;
+                process.OutputDataReceived -= OnDataReceived;
+                process.ErrorDataReceived -= OnErrorReceived;
+                process.Exited -= OnProcessOnExited;
+                process.Dispose();
+                // Huge hack below to make sure all events are in collections before exiting.
+                Application.Current.Dispatcher.Invoke(() => { });
+                tcs.SetResult(true);
             }
         }
 

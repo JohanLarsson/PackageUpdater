@@ -1,18 +1,13 @@
 ﻿namespace PackageUpdater
 {
     using System.IO;
-    using System.Windows.Input;
-    using PackageUpdater.Tasks;
 
     public class DebugViewModel
     {
-        public DebugViewModel()
-        {
-            this.RestoreCommand = new RelayCommand(_ => this.RestoreTask.Start());
-        }
+        public static DirectoryInfo WorkingDirectory { get; } = new DirectoryInfo("C:\\Git\\_GuOrg\\Gu.Inject");
 
-        public RestoreTask RestoreTask { get; } = new RestoreTask(new DirectoryInfo("C:\\Git\\_GuOrg\\Gu.Inject"));
+        public DotnetRestore DotnetRestore { get; } = new DotnetRestore(WorkingDirectory);
 
-        public ICommand RestoreCommand { get; }
+        public GitAssertEmptyDiff AssertEmptyDiff { get; } = new GitAssertEmptyDiff(WorkingDirectory);
     }
 }

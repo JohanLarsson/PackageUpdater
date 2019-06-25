@@ -53,15 +53,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DebugViewModel.cs" />
-    <Compile Include="Tasks\RestoreTask.cs" />
-    <Compile Include="Wpf\RelayCommand.cs" />
+    <Compile Include="DebugProcessView.xaml.cs">
+      <DependentUpon>DebugProcessView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DebugViewModel.cs">
+      <DependentUpon>DebugProcessView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Repository.cs" />
-    <Compile Include="PackageUpdate.cs" />
+    <Compile Include="RepositoryPackageUpdate.cs">
+      <DependentUpon>UpdatePackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tasks\AbstractProcess.cs" />
+    <Compile Include="Tasks\BatchProcess.cs" />
+    <Compile Include="Tasks\DotnetRestore.cs" />
+    <Compile Include="Tasks\GitAssertIsOnMaster.cs" />
+    <Compile Include="Tasks\GitCleanDxf.cs" />
+    <Compile Include="Tasks\GitAssertEmptyDiff.cs" />
+    <Compile Include="Tasks\GitFetchOrigin.cs" />
+    <Compile Include="Tasks\GitPullOrigin.cs" />
+    <Compile Include="UpdatePackageView.xaml.cs">
+      <DependentUpon>UpdatePackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UpdatePackageViewModel.cs">
+      <DependentUpon>UpdatePackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Wpf\AsyncCommand.cs" />
+    <Compile Include="Wpf\RelayCommand.cs" />
     <Compile Include="Wpf\StringToVisibilityConverter.cs" />
-    <Compile Include="UpdateProcess.cs" />
-    <Compile Include="UpdateStatus.cs" />
-    <Compile Include="ViewModel.cs" />
+    <Compile Include="Tasks\PaketUpdate.cs" />
+    <Compile Include="Tasks\UpdateStatus.cs" />
+    <Page Include="DebugProcessView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -74,6 +101,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="UpdatePackageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

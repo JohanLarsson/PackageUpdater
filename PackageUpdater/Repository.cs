@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
@@ -9,21 +10,37 @@
 
     public class Repository : INotifyPropertyChanged
     {
-        public Repository(FileInfo sln, FileInfo dependencies, FileInfo lockFile, FileInfo paketExe)
+        private Repository(DirectoryInfo gitDirectory, FileInfo dependencies, FileInfo lockFile, FileInfo paketExe)
         {
-            this.Sln = sln;
+            this.GitDirectory = gitDirectory;
             this.Dependencies = dependencies;
             this.LockFile = lockFile;
             this.PaketExe = paketExe;
-            this.CleanCommand = new RelayCommand(
-                _ => this.Clean(),
-                _ => this.DotVsDirectory != null);
-            this.RestoreCommand = new RelayCommand(_ => this.Restore(), _ => true);
+            this.SolutionFiles = new ReadOnlyObservableCollection<FileInfo>(new ObservableCollection<FileInfo>(gitDirectory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly)));
+            this.CleanCommand = new RelayCommand(_ => this.Clean());
+            this.DotnetRestore = new DotnetRestore(this.GitDirectory);
+            this.EmptyDiff = new GitAssertEmptyDiff(this.GitDirectory);
+            this.IsOnMaster = new GitAssertIsOnMaster(this.GitDirectory);
+            Initialize();
+            async void Initialize()
+            {
+                try
+                {
+                    await this.EmptyDiff.RunAsync().ConfigureAwait(false);
+                    await this.IsOnMaster.RunAsync().ConfigureAwait(false);
+                }
+                catch
+                {
+                    Debugger.Break();
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public FileInfo Sln { get; }
+        public DirectoryInfo GitDirectory { get; }
+
+        public ReadOnlyObservableCollection<FileInfo> SolutionFiles { get; }
 
         public FileInfo Dependencies { get; }
 
@@ -31,34 +48,22 @@
 
         public FileInfo PaketExe { get; }
 
-        public DirectoryInfo RootDirectory => this.Sln.Directory;
-
         public ICommand CleanCommand { get; }
 
-        public ICommand RestoreCommand { get; }
+        public DotnetRestore DotnetRestore { get; }
 
-        public DirectoryInfo DotVsDirectory
-        {
-            get
-            {
-                if (this.RootDirectory.EnumerateDirectories(".vs").FirstOrDefault() is DirectoryInfo dir)
-                {
-                    return dir;
-                }
+        public GitAssertEmptyDiff EmptyDiff { get; }
 
-                return null;
-            }
-        }
+        public GitAssertIsOnMaster IsOnMaster { get; }
 
         public static bool TryCreate(string directory, out Repository repository)
         {
-            if (Directory.EnumerateFiles(directory, "*.sln").FirstOrDefault() is string sln &&
-                Directory.EnumerateFiles(directory, "paket.dependencies").FirstOrDefault() is string dependencies &&
+            if (Directory.EnumerateFiles(directory, "paket.dependencies").FirstOrDefault() is string dependencies &&
                 Directory.EnumerateFiles(directory, "paket.lock").FirstOrDefault() is string lockFile &&
                 Directory.EnumerateDirectories(directory, ".paket").FirstOrDefault() is string paketDir &&
                 Directory.EnumerateFiles(paketDir, "paket.exe").FirstOrDefault() is string paketExe)
             {
-                repository = new Repository(new FileInfo(sln), new FileInfo(dependencies), new FileInfo(lockFile), new FileInfo(paketExe));
+                repository = new Repository(new DirectoryInfo(directory), new FileInfo(dependencies), new FileInfo(lockFile), new FileInfo(paketExe));
                 return true;
             }
 
@@ -75,44 +80,27 @@
         {
             try
             {
-                this.DotVsDirectory?.Delete(true);
-                if (this.Sln.Directory is DirectoryInfo dir)
+                foreach (var sln in this.SolutionFiles)
                 {
-                    foreach (var csproj in dir.EnumerateFiles("*.csproj", SearchOption.AllDirectories))
+                    if (sln.Directory.EnumerateDirectories(".vs").FirstOrDefault() is DirectoryInfo dir)
                     {
-                        if (csproj.DirectoryName is string directoryName)
-                        {
-                            Directory.Delete(Path.Combine(directoryName, "bin"));
-                            Directory.Delete(Path.Combine(directoryName, "obj"));
-                        }
+                        dir.Delete();
                     }
                 }
 
-
-                this.OnPropertyChanged(nameof(this.DotVsDirectory));
+                foreach (var csproj in this.GitDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories))
+                {
+                    if (csproj.DirectoryName is string directoryName)
+                    {
+                        Directory.Delete(Path.Combine(directoryName, "bin"));
+                        Directory.Delete(Path.Combine(directoryName, "obj"));
+                    }
+                }
             }
             catch
             {
                 // just swallowing
             }
-        }
-
-        private void Restore()
-        {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo("CMD.exe")
-                {
-                    Arguments = "dotnet restore",
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true,
-                    WorkingDirectory = this.Sln.DirectoryName,
-                },
-            };
-
-            process.Start();
         }
     }
 }
