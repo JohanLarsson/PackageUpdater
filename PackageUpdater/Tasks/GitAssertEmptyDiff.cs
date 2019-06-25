@@ -1,6 +1,7 @@
 ﻿namespace PackageUpdater
 {
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     public class GitAssertEmptyDiff : AbstractProcess
@@ -13,7 +14,7 @@
         public override async Task RunAsync()
         {
             await base.RunAsync().ConfigureAwait(false);
-            this.Status = this.Datas.Count == 0 ? Status.Success : Status.Error;
+            this.Status = this.Datas.Any(x => x.Data != null) ? Status.Error : Status.Success;
         }
     }
 }
