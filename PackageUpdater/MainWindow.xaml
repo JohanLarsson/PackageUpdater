@@ -1,132 +1,136 @@
-﻿<Window
-    x:Class="PackageUpdater.MainWindow"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:PackageUpdater"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="MainWindow"
-    Width="800"
-    Height="450"
-    mc:Ignorable="d">
+﻿<Window x:Class="PackageUpdater.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:PackageUpdater"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="MainWindow"
+        Width="800"
+        Height="450"
+        mc:Ignorable="d">
     <Window.DataContext>
         <local:ViewModel />
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MinHeight="200" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox Text="{Binding GitDirectory}" />
-            <Button
-                Grid.Column="1"
-                Command="{Binding BrowseForGitDirectoryCommand}"
-                Content="..." />
+            <TextBlock Text="Git directory:" />
+            <TextBox Grid.Column="1" Text="{Binding GitDirectory}" />
+            <Button Grid.Column="2"
+                    Command="{Binding BrowseForGitDirectoryCommand}"
+                    Content="..." />
         </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" MinWidth="50" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="Group" />
-            <TextBox Grid.Column="1" Text="{Binding Group, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
-            <TextBlock Grid.Column="2" Text="Package" />
-            <TextBox Grid.Column="3" Text="{Binding PackageId, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
-        </Grid>
+        <TabControl Grid.Row="1">
+            <TabItem Header="Update">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" MinHeight="200" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" MinWidth="50" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Group" />
+                        <TextBox Grid.Column="1" Text="{Binding Group, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                        <TextBlock Grid.Column="2" Text="Package" />
+                        <TextBox Grid.Column="3" Text="{Binding PackageId, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                    </Grid>
 
-        <DataGrid
-            Grid.Row="2"
-            HorizontalContentAlignment="Stretch"
-            AutoGenerateColumns="False"
-            ItemsSource="{Binding PackageUpdates}"
-            SelectedItem="{Binding SelectedPackage}">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="*" Header="Sln">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <TextBlock Text="">
-                                <Hyperlink NavigateUri="{Binding Repository.Sln.FullName}" RequestNavigate="OnRequestNavigate">
-                                    <Hyperlink.Inlines>
-                                        <Run Text="{Binding Repository.Sln.FullName, Mode=OneWay}" />
-                                    </Hyperlink.Inlines>
-                                </Hyperlink>
-                            </TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                    <DataGrid Grid.Row="1"
+                              HorizontalContentAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              ItemsSource="{Binding PackageUpdates}"
+                              SelectedItem="{Binding SelectedPackage}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="*" Header="Sln">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                                        <TextBlock Text="">
+                                            <Hyperlink NavigateUri="{Binding Repository.Sln.FullName}" RequestNavigate="OnRequestNavigate">
+                                                <Hyperlink.Inlines>
+                                                    <Run Text="{Binding Repository.Sln.FullName, Mode=OneWay}" />
+                                                </Hyperlink.Inlines>
+                                            </Hyperlink>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Status">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <TextBlock Text="{Binding UpdateProcess.Status}" ToolTip="{Binding UpdateProcess.AllOutput}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Status">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                                        <TextBlock Text="{Binding UpdateProcess.Status}" ToolTip="{Binding UpdateProcess.AllOutput}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Update package">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <Button Command="{Binding UpdateProcess.UpdateCommand}" Content="Update package" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Update package">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                                        <Button Command="{Binding UpdateProcess.UpdateCommand}" Content="Update package" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Clean">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <Button Command="{Binding Repository.CleanCommand}" Content="Clean" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Clean">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                                        <Button Command="{Binding Repository.CleanCommand}" Content="Clean" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Restore">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:PackageUpdate}">
-                            <Button Command="{Binding Repository.RestoreCommand}" Content="Restore" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                            <DataGridTemplateColumn Header="Restore">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate DataType="{x:Type local:PackageUpdate}">
+                                        <Button Command="{Binding Repository.RestoreCommand}" Content="Restore" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
 
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Button
-                Grid.Column="1"
-                Command="{Binding UpdateAllCommand}"
-                Content="Update all" />
-            <Button
-                Grid.Column="2"
-                Command="{Binding DeleteAllDotVsFolderCommand}"
-                Content="Delete all .vs" />
-        </Grid>
-        <Grid Grid.Row="4">
-            <TextBox
-                IsReadOnly="True"
-                IsReadOnlyCaretVisible="True"
-                Text="{Binding SelectedPackage.UpdateProcess.Output, Mode=OneWay}"
-                VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
-            <TextBox
-                IsReadOnly="True"
-                IsReadOnlyCaretVisible="True"
-                Text="{Binding SelectedPackage.UpdateProcess.Error, Mode=OneWay}"
-                VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
-        </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="1"
+                                Command="{Binding UpdateAllCommand}"
+                                Content="Update all" />
+                        <Button Grid.Column="2"
+                                Command="{Binding DeleteAllDotVsFolderCommand}"
+                                Content="Delete all .vs" />
+                    </Grid>
+                    <Grid Grid.Row="3">
+                        <TextBox IsReadOnly="True"
+                                 IsReadOnlyCaretVisible="True"
+                                 Text="{Binding SelectedPackage.UpdateProcess.Output, Mode=OneWay}"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
+                        <TextBox IsReadOnly="True"
+                                 IsReadOnlyCaretVisible="True"
+                                 Text="{Binding SelectedPackage.UpdateProcess.Error, Mode=OneWay}"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Visibility="{Binding RelativeSource={RelativeSource Self}, Path=Text, Converter={x:Static local:StringToVisibilityConverter.CollapsedWhenEmpty}}" />
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
