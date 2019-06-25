@@ -1,8 +1,9 @@
 ﻿namespace PackageUpdater
 {
-    public enum UpdateStatus
+    public enum Status
     {
         Waiting,
+        Running,
         NoChange,
         Error,
         Success,

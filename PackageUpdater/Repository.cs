@@ -21,8 +21,8 @@
             this.DotnetRestore = new DotnetRestore(this.GitDirectory);
             this.EmptyDiff = new GitAssertEmptyDiff(this.GitDirectory);
             this.IsOnMaster = new GitAssertIsOnMaster(this.GitDirectory);
-            Initialize();
-            async void Initialize()
+            InitializeAsync();
+            async void InitializeAsync()
             {
                 try
                 {

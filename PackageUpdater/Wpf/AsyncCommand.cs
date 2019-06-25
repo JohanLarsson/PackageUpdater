@@ -1,10 +1,12 @@
 ﻿namespace PackageUpdater
 {
     using System;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
-    public class AsyncCommand : ICommand
+    public class AsyncCommand : ICommand, INotifyPropertyChanged
     {
         private readonly Func<Task> execute;
         private readonly Func<bool> canExecute;
@@ -20,6 +22,23 @@
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsRunning
+        {
+            get => this.isRunning;
+            set
+            {
+                if (value == this.isRunning)
+                {
+                    return;
+                }
+
+                this.isRunning = value;
+                this.OnPropertyChanged();
+            }
         }
 
         public bool CanExecute(object parameter)
@@ -42,14 +61,19 @@
 
             try
             {
-                this.isRunning = true;
+                this.IsRunning = true;
                 await this.execute();
             }
             finally
             {
-                this.isRunning = false;
+                this.IsRunning = false;
                 CommandManager.InvalidateRequerySuggested();
             }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

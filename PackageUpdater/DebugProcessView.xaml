@@ -28,8 +28,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Button Command="{Binding StartCommand}" Content="Start" />
-        <TextBlock Grid.Row="1" Text="{Binding Exited, StringFormat='Exited: {0}'}" />
-        <TextBlock Grid.Row="2" Text="{Binding Success, StringFormat='Success: {0}'}" />
+        <TextBlock Grid.Row="2" Text="{Binding Status, StringFormat='Success: {0}'}" />
         <TextBlock Grid.Row="3">
             <TextBlock.Inlines>
                 <Run Text="{Binding Exe, Mode=OneTime, StringFormat='Exe: {0}, '}" />

@@ -28,35 +28,116 @@
             <TextBox Grid.Column="3" Text="{Binding Group, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
         </Grid>
 
-        <DataGrid Grid.Row="1"
+        <ListView Grid.Row="1"
                   HorizontalContentAlignment="Stretch"
-                  AutoGenerateColumns="False"
                   ItemsSource="{Binding PackageUpdates}"
                   SelectedItem="{Binding SelectedPackage}">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Width="*" Header="Sln">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
-                            <TextBlock Text="">
-                                <Hyperlink NavigateUri="{Binding Repository.GitDirectory.FullName}" RequestNavigate="OnRequestNavigate">
-                                    <Hyperlink.Inlines>
-                                        <Run Text="{Binding Repository.GitDirectory.Name, Mode=OneWay}" />
-                                    </Hyperlink.Inlines>
-                                </Hyperlink>
-                            </TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Repository">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
+                                <TextBlock Text="">
+                                    <Hyperlink NavigateUri="{Binding Repository.GitDirectory.FullName}" RequestNavigate="OnRequestNavigate">
+                                        <Hyperlink.Inlines>
+                                            <Run Text="{Binding Repository.GitDirectory.FullName, Mode=OneWay}" />
+                                        </Hyperlink.Inlines>
+                                    </Hyperlink>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
 
-                <DataGridTemplateColumn Header="Update package">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
-                            <Button Command="{Binding Process.StartCommand}" Content="Update package" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                    <GridViewColumn Header="Status">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
+                                <ItemsControl  ItemsSource="{Binding Process.Steps}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type local:AbstractProcess}">
+                                            <Border Height="10"
+                                                    Background="Transparent" Margin="2,0">
+                                                <Border.ToolTip>
+                                                    <MultiBinding StringFormat="{}{0} {1}">
+                                                        <Binding Path="Exe" />
+                                                        <Binding Path="Arguments" />
+                                                    </MultiBinding>
+                                                </Border.ToolTip>
+                                                <ContentPresenter Content="{Binding Status}">
+                                                    <ContentPresenter.ContentTemplateSelector>
+                                                        <local:StatusTemplateSelector>
+                                                            <local:StatusTemplateSelector.Waiting>
+                                                                <DataTemplate>
+                                                                    <Ellipse Fill="{StaticResource GrayBrush}" Style="{StaticResource IconPathStyle}" />
+                                                                </DataTemplate>
+                                                            </local:StatusTemplateSelector.Waiting>
+
+                                                            <local:StatusTemplateSelector.Running>
+                                                                <DataTemplate>
+                                                                    <Path Data="{StaticResource PlayGeometry}"
+                                                                          Fill="{StaticResource GreenBrush}"
+                                                                          Style="{StaticResource IconPathStyle}" />
+                                                                </DataTemplate>
+                                                            </local:StatusTemplateSelector.Running>
+
+                                                            <local:StatusTemplateSelector.Success>
+                                                                <DataTemplate>
+                                                                    <Path Data="{StaticResource CheckGeometry}"
+                                                                          Fill="{StaticResource GreenBrush}"
+                                                                          Style="{StaticResource IconPathStyle}" />
+                                                                </DataTemplate>
+                                                            </local:StatusTemplateSelector.Success>
+
+                                                            <local:StatusTemplateSelector.NoChange>
+                                                                <DataTemplate>
+                                                                    <Path Data="{StaticResource CheckGeometry}"
+                                                                          Fill="{StaticResource BlueBrush}"
+                                                                          Style="{StaticResource IconPathStyle}" />
+                                                                </DataTemplate>
+                                                            </local:StatusTemplateSelector.NoChange>
+
+                                                            <local:StatusTemplateSelector.Error>
+                                                                <DataTemplate>
+                                                                    <Path Data="{StaticResource ErrorGeometry}"
+                                                                          Fill="{StaticResource RedBrush}"
+                                                                          Style="{StaticResource IconPathStyle}" />
+                                                                </DataTemplate>
+                                                            </local:StatusTemplateSelector.Error>
+                                                        </local:StatusTemplateSelector>
+                                                    </ContentPresenter.ContentTemplateSelector>
+                                                </ContentPresenter>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Run">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
+                                <Button Command="{Binding Process.StartCommand}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border Background="Transparent">
+                                                <Path Data="{StaticResource PlayGeometry}"
+                                                      Fill="{StaticResource GreenBrush}"
+                                                      Style="{StaticResource IconPathStyle}" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

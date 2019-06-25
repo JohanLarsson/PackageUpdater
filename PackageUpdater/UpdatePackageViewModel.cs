@@ -96,13 +96,9 @@
             }
         }
 
-
         private async Task UpdateAllAsync()
         {
-            foreach (var batchProcess in this.PackageUpdates)
-            {
-                await batchProcess.Process.RunAsync();
-            }
+            await Task.WhenAll(this.PackageUpdates.Select(x => x.Process.RunAsync()));
         }
     }
 }

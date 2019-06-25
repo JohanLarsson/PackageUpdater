@@ -13,7 +13,7 @@
         public override async Task RunAsync()
         {
             await base.RunAsync().ConfigureAwait(false);
-            this.Success = this.Datas.Count == 0;
+            this.Status = this.Datas.Count == 0 ? Status.Success : Status.Error;
         }
     }
 }
