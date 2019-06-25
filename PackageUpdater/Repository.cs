@@ -1,9 +1,7 @@
 ﻿namespace PackageUpdater
 {
-    using System;
     using System.ComponentModel;
     using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -103,7 +101,6 @@
         {
             var process = new Process
             {
-
                 StartInfo = new ProcessStartInfo("CMD.exe")
                 {
                     Arguments = "dotnet restore",

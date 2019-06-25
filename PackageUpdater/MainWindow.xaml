@@ -131,6 +131,27 @@
                     </Grid>
                 </Grid>
             </TabItem>
+            <TabItem Header="Debug">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Button Command="{Binding Debug.RestoreCommand}" Content="Start" />
+                    <TextBlock Grid.Row="1" Text="{Binding Debug.RestoreTask.Exited}" />
+                    <TextBlock Grid.Row="2" Text="{Binding Debug.RestoreTask.Directory, Mode=OneTime}" />
+                    <UniformGrid Grid.Row="3" Rows="1">
+                        <GroupBox Header="Data">
+                            <ListBox ItemsSource="{Binding Debug.RestoreTask.Datas}" />
+                        </GroupBox>
+                        <GroupBox Header="Errors">
+                            <ListBox ItemsSource="{Binding Debug.RestoreTask.Errors}" />
+                        </GroupBox>
+                    </UniformGrid>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
