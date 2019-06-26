@@ -3,7 +3,7 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public class UpdatePackageInfo : INotifyPropertyChanged
+    public class UpdatePackageInfo : ITaskInfo
     {
         private string group;
         private string packageId;

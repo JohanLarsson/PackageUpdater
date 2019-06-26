@@ -33,7 +33,7 @@
 
         public IReadOnlyView<TaskViewModel> Tasks { get; }
 
-        public UpdatePackageInfo UpdatePackageInfo { get; } = new UpdatePackageInfo();
+        public ITaskInfo TaskInfo { get; } = new UpdatePackageInfo();
 
         public TaskViewModel SelectedTask
         {

@@ -15,28 +15,66 @@
             <RowDefinition Height="*" MinHeight="200" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       Text="Package" />
-            <TextBox Grid.Row="0"
-                     Grid.Column="1"
-                     Text="{Binding UpdatePackageInfo.PackageId, UpdateSourceTrigger=PropertyChanged}" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="0"
-                       Text="Group" />
-            <TextBox Grid.Row="1"
-                     Grid.Column="1"
-                     Text="{Binding UpdatePackageInfo.Group, UpdateSourceTrigger=PropertyChanged}" />
-        </Grid>
+        <ContentPresenter Grid.Row="0" Content="{Binding TaskInfo}">
+            <ContentPresenter.ContentTemplateSelector>
+                <local:TaskInfoTemplateSelector>
+                    <local:TaskInfoTemplateSelector.Update>
+                        <DataTemplate DataType="{x:Type local:UpdatePackageInfo}">
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="Package" />
+                                <TextBox Grid.Row="0"
+                                         Grid.Column="1"
+                                         Text="{Binding PackageId}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="0"
+                                           Text="Group" />
+                                <TextBox Grid.Row="1"
+                                         Grid.Column="1"
+                                         Text="{Binding Group}" />
+                            </Grid>
+                        </DataTemplate>
+                    </local:TaskInfoTemplateSelector.Update>
+                    <local:TaskInfoTemplateSelector.Replace>
+                        <DataTemplate DataType="{x:Type local:ReplacePackageInfo}">
+
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="Old" />
+                                <TextBox Grid.Row="0"
+                                         Grid.Column="1"
+                                         Text="{Binding TaskInfo.OldPackageId}" />
+                                <TextBlock Grid.Row="1"
+                                           Grid.Column="0"
+                                           Text="New" />
+                                <TextBox Grid.Row="1"
+                                         Grid.Column="1"
+                                         Text="{Binding TaskInfo.NewPackageId}" />
+                            </Grid>
+                        </DataTemplate>
+                    </local:TaskInfoTemplateSelector.Replace>
+                </local:TaskInfoTemplateSelector>
+            </ContentPresenter.ContentTemplateSelector>
+        </ContentPresenter>
+
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

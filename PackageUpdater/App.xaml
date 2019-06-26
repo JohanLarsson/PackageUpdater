@@ -43,11 +43,11 @@
                             <Setter.Value>
                                 <DataTemplate DataType="{x:Type diagnostics:DataReceivedEventArgs}">
                                     <TextBox Background="Transparent"
-                                                 BorderThickness="0"
-                                                 Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=Foreground}"
-                                                 IsReadOnly="True"
-                                                 IsReadOnlyCaretVisible="True"
-                                                 Text="{Binding Data, Mode=OneTime}" />
+                                             BorderThickness="0"
+                                             Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=Foreground}"
+                                             IsReadOnly="True"
+                                             IsReadOnlyCaretVisible="True"
+                                             Text="{Binding Data, Mode=OneTime}" />
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>

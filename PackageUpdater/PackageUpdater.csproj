@@ -82,6 +82,12 @@
     <Compile Include="DebugViewModel.cs">
       <DependentUpon>DebugProcessView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ITaskInfo.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ReplacePackageInfo.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Repository.cs" />
     <Compile Include="Tasks\AbstractCliTask.cs" />
     <Compile Include="Tasks\Paket\PaketInstall.cs" />
@@ -104,7 +110,9 @@
     <Compile Include="TaskListViewModel.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UpdatePackageInfo.cs" />
+    <Compile Include="UpdatePackageInfo.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -117,6 +125,7 @@
     <Compile Include="Wpf\StringToVisibilityConverter.cs" />
     <Compile Include="Tasks\Paket\PaketUpdate.cs" />
     <Compile Include="Tasks\Status.cs" />
+    <Compile Include="Wpf\TaskInfoTemplateSelector.cs" />
     <Page Include="DebugProcessView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

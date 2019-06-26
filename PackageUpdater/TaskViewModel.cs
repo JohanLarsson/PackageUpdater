@@ -17,9 +17,9 @@
         public TaskViewModel(Repository repository, TaskListViewModel taskList)
         {
             this.Repository = repository;
-            this.disposable = taskList.UpdatePackageInfo.ObservePropertyChangedSlim()
+            this.disposable = taskList.TaskInfo.ObservePropertyChangedSlim()
                                       .StartWith(PropertyChangedEventArgs)
-                                      .Subscribe(_ => this.Task = taskList.UpdatePackageInfo.CreateBatch(repository));
+                                      .Subscribe(_ => this.Task = taskList.TaskInfo.CreateBatch(repository));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
