@@ -75,6 +75,11 @@
             }
         }
 
+        public void Reset()
+        {
+            this.Status = Status.Waiting;
+        }
+
         public virtual Task RunAsync()
         {
             var tcs = new TaskCompletionSource<bool>();

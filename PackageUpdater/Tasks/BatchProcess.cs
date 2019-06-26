@@ -6,10 +6,12 @@
     using System.Runtime.CompilerServices;
     using System.Threading.Tasks;
     using System.Windows.Input;
+    using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
     public sealed class BatchProcess : INotifyPropertyChanged, IDisposable
     {
+        private readonly Condition canRun;
         private AbstractProcess current;
         private Exception exception;
         private Status status = Status.Waiting;
@@ -18,7 +20,10 @@
         public BatchProcess(params AbstractProcess[] steps)
         {
             this.Steps = new ReadOnlyObservableCollection<AbstractProcess>(new ObservableCollection<AbstractProcess>(steps));
-            this.StartCommand = new AsyncCommand(() => this.RunAsync());
+            this.canRun = new Condition(
+                () => this.status != Status.Running,
+                this.ObservePropertyChangedSlim(x => x.Status));
+            this.StartCommand = new AsyncCommand(this.RunAsync, this.canRun);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -76,7 +81,12 @@
         {
             this.Status = Status.Running;
             this.Exception = null;
-            foreach (var step in Steps)
+            foreach (var step in this.Steps)
+            {
+                step.Reset();
+            }
+
+            foreach (var step in this.Steps)
             {
                 this.Current = step;
                 try
@@ -108,6 +118,7 @@
 
             this.disposed = true;
             (this.StartCommand as IDisposable)?.Dispose();
+            this.canRun.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)

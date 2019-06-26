@@ -59,7 +59,8 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type local:AbstractProcess}">
-                                            <Border Height="10"
+                                            <Border Width="10"
+                                                    Height="10"
                                                     Margin="2,0"
                                                     Background="Transparent"
                                                     ToolTip="{Binding DisplayText}">
@@ -68,7 +69,11 @@
                                                         <local:StatusTemplateSelector>
                                                             <local:StatusTemplateSelector.Waiting>
                                                                 <DataTemplate>
-                                                                    <Ellipse Fill="{StaticResource GrayBrush}" Style="{StaticResource IconPathStyle}" />
+                                                                    <Ellipse Width="4"
+                                                                             Height="4"
+                                                                             Margin="3"
+                                                                             Fill="{StaticResource GrayBrush}"
+                                                                             Style="{StaticResource IconPathStyle}" />
                                                                 </DataTemplate>
                                                             </local:StatusTemplateSelector.Waiting>
 
