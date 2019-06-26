@@ -57,6 +57,24 @@
             return false;
         }
 
+        public bool TryGetPaketFiles(out FileInfo dependencies, out FileInfo @lock, out FileInfo paketExe)
+        {
+            if (this.Directory.EnumerateFiles("paket.dependencies").FirstOrDefault() is FileInfo deps &&
+                this.Directory.EnumerateDirectories(".paket").FirstOrDefault() is DirectoryInfo paketDir &&
+                paketDir.EnumerateFiles("paket.exe").FirstOrDefault() is FileInfo exe)
+            {
+                dependencies = deps;
+                @lock = this.Directory.EnumerateFiles("paket.lock").FirstOrDefault();
+                paketExe = exe;
+                return true;
+            }
+
+            dependencies = null;
+            @lock = null;
+            paketExe = null;
+            return false;
+        }
+
         public void Dispose()
         {
             if (this.disposed)

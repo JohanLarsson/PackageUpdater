@@ -23,10 +23,7 @@
 
         public static bool TryCreate(Repository repository, string packageId, string group, out PaketUpdate update)
         {
-            if (repository.Directory.EnumerateFiles("paket.dependencies").FirstOrDefault() is FileInfo dependencies &&
-                repository.Directory.EnumerateFiles("paket.lock").Any() &&
-                repository.Directory.EnumerateDirectories(".paket").FirstOrDefault() is DirectoryInfo paketDir &&
-                paketDir.EnumerateFiles("paket.exe").FirstOrDefault() is FileInfo paketExe)
+            if (repository.TryGetPaketFiles(out var dependencies, out _, out var paketExe))
             {
                 if (string.IsNullOrWhiteSpace(group) && string.IsNullOrWhiteSpace(packageId))
                 {
