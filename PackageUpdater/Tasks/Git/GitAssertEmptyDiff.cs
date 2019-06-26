@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    public class GitAssertEmptyDiff : AbstractCliProcess
+    public class GitAssertEmptyDiff : AbstractCliTask
     {
         public GitAssertEmptyDiff(DirectoryInfo directory)
             : base("git.exe", "diff", directory)

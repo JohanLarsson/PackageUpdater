@@ -83,14 +83,17 @@
       <DependentUpon>DebugProcessView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Repository.cs" />
-    <Compile Include="Tasks\AbstractCliProcess.cs" />
+    <Compile Include="Tasks\AbstractCliTask.cs" />
     <Compile Include="Tasks\Paket\PaketInstall.cs" />
     <Compile Include="Tasks\Paket\PaketReplace.cs" />
-    <Compile Include="UpdatePackageViewModel.cs">
-      <DependentUpon>UpdatePackageView.xaml</DependentUpon>
+    <Compile Include="TaskListView.xaml.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tasks\AbstractProcess.cs" />
-    <Compile Include="Tasks\BatchProcess.cs" />
+    <Compile Include="TaskViewModel.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Tasks\AbstractTask.cs" />
+    <Compile Include="Tasks\Batch.cs" />
     <Compile Include="Tasks\Dotnet\DotnetRestore.cs" />
     <Compile Include="Tasks\Git\GitAssertIsOnMaster.cs" />
     <Compile Include="Tasks\Git\GitCleanDxf.cs" />
@@ -98,11 +101,8 @@
     <Compile Include="Tasks\Git\GitAssertEmptyDiff.cs" />
     <Compile Include="Tasks\Git\GitFetchOrigin.cs" />
     <Compile Include="Tasks\Git\GitPullOrigin.cs" />
-    <Compile Include="UpdatePackageView.xaml.cs">
-      <DependentUpon>UpdatePackageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UpdatePackagesViewModel.cs">
-      <DependentUpon>UpdatePackageView.xaml</DependentUpon>
+    <Compile Include="TaskListViewModel.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -132,7 +132,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UpdatePackageView.xaml">
+    <Page Include="TaskListView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,15 +7,15 @@
     using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
-    public sealed class BatchProcess : AbstractProcess, IDisposable
+    public sealed class Batch : AbstractTask, IDisposable
     {
         private readonly Condition canRun;
-        private AbstractProcess current;
+        private AbstractTask current;
         private bool disposed;
 
-        public BatchProcess(params AbstractProcess[] steps)
+        public Batch(params AbstractTask[] steps)
         {
-            this.Steps = new ReadOnlyObservableCollection<AbstractProcess>(new ObservableCollection<AbstractProcess>(steps));
+            this.Steps = new ReadOnlyObservableCollection<AbstractTask>(new ObservableCollection<AbstractTask>(steps));
             this.canRun = new Condition(
                 () => this.Status != Status.Running,
                 this.ObservePropertyChangedSlim(x => x.Status));
@@ -24,11 +24,11 @@
 
         public override AsyncCommand StartCommand { get; }
 
-        public ReadOnlyObservableCollection<AbstractProcess> Steps { get; }
+        public ReadOnlyObservableCollection<AbstractTask> Steps { get; }
 
         public override string DisplayText => string.Join(",", this.Steps.Select(x => x.DisplayText));
 
-        public AbstractProcess Current
+        public AbstractTask Current
         {
             get => this.current;
             set

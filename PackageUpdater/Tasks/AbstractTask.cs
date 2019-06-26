@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Gu.Wpf.Reactive;
 
-    public abstract class AbstractProcess : INotifyPropertyChanged
+    public abstract class AbstractTask : INotifyPropertyChanged
     {
         private Exception exception;
         private Status status = Status.Waiting;

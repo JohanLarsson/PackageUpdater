@@ -10,22 +10,22 @@
     using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
-    public sealed class UpdatePackagesViewModel : INotifyPropertyChanged, IDisposable
+    public sealed class TaskListViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly MappingView<Repository, UpdatePackageViewModel> mapped;
+        private readonly MappingView<Repository, TaskViewModel> mapped;
         private string group;
         private string packageId;
-        private UpdatePackageViewModel selectedUpdate;
+        private TaskViewModel selectedTask;
         private bool disposed;
 
-        public UpdatePackagesViewModel(ReadOnlyObservableCollection<Repository> repositories)
+        public TaskListViewModel(ReadOnlyObservableCollection<Repository> repositories)
         {
             mapped = repositories.AsMappingView(
-                x => new UpdatePackageViewModel(x, this),
+                x => new TaskViewModel(x, this),
                 x => x.Dispose());
-            this.Updates = mapped.AsReadOnlyFilteredView(
-                x => x.Process != null,
-                mapped.ObserveItemPropertyChangedSlim(x => x.Process));
+            this.Tasks = mapped.AsReadOnlyFilteredView(
+                x => x.Task != null,
+                mapped.ObserveItemPropertyChangedSlim(x => x.Task));
             this.UpdateAllCommand = new AsyncCommand(() => this.UpdateAllAsync());
         }
 
@@ -33,19 +33,19 @@
 
         public ICommand UpdateAllCommand { get; }
 
-        public IReadOnlyView<UpdatePackageViewModel> Updates { get; }
+        public IReadOnlyView<TaskViewModel> Tasks { get; }
 
-        public UpdatePackageViewModel SelectedUpdate
+        public TaskViewModel SelectedTask
         {
-            get => this.selectedUpdate;
+            get => this.selectedTask;
             set
             {
-                if (ReferenceEquals(value, this.selectedUpdate))
+                if (ReferenceEquals(value, this.selectedTask))
                 {
                     return;
                 }
 
-                this.selectedUpdate = value;
+                this.selectedTask = value;
                 this.OnPropertyChanged();
             }
         }
@@ -89,7 +89,7 @@
 
             this.disposed = true;
             (this.UpdateAllCommand as System.IDisposable)?.Dispose();
-            this.Updates?.Dispose();
+            this.Tasks?.Dispose();
             this.mapped?.Dispose();
         }
 
@@ -100,7 +100,7 @@
 
         private async Task UpdateAllAsync()
         {
-            await Task.WhenAll(this.Updates.Select(x => x.Process.RunAsync()));
+            await Task.WhenAll(this.Tasks.Select(x => x.Task.RunAsync()));
         }
 
         private void ThrowIfDisposed()

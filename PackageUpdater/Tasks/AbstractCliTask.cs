@@ -12,14 +12,14 @@
     using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
-    public abstract class AbstractCliProcess : AbstractProcess, IDisposable
+    public abstract class AbstractCliTask : AbstractTask, IDisposable
     {
         private readonly SerialDisposable<Process> serialDisposable = new SerialDisposable<Process>();
         private readonly ObservableCollection<DataReceivedEventArgs> data = new ObservableCollection<DataReceivedEventArgs>();
         private readonly ObservableCollection<DataReceivedEventArgs> errors = new ObservableCollection<DataReceivedEventArgs>();
         private bool disposed;
 
-        protected AbstractCliProcess(string exe, string arguments, DirectoryInfo workingDirectory)
+        protected AbstractCliTask(string exe, string arguments, DirectoryInfo workingDirectory)
         {
             this.Data = new ReadOnlyObservableCollection<DataReceivedEventArgs>(this.data);
             this.Errors = new ReadOnlyObservableCollection<DataReceivedEventArgs>(this.errors);

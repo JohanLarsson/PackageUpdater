@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PackageUpdater"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             d:DataContext="{d:DesignInstance Type=local:UpdatePackagesViewModel,
+             d:DataContext="{d:DesignInstance Type=local:TaskListViewModel,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -45,15 +45,15 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <ListView HorizontalContentAlignment="Stretch"
-                      ItemsSource="{Binding Updates}"
-                      SelectedItem="{Binding SelectedUpdate}">
+                      ItemsSource="{Binding Tasks}"
+                      SelectedItem="{Binding SelectedTask}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Repository">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:UpdatePackageViewModel}">
+                                <DataTemplate DataType="{x:Type local:TaskViewModel}">
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Margin="0,0,4,0" Command="{Binding Process.StartCommand}">
+                                        <Button Margin="0,0,4,0" Command="{Binding Task.StartCommand}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                     <Border Background="Transparent">
@@ -85,8 +85,8 @@
 
                         <GridViewColumn Header="Status">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:UpdatePackageViewModel}">
-                                    <ItemsControl ItemTemplate="{StaticResource StatusTemplate}" ItemsSource="{Binding Process.Steps}">
+                                <DataTemplate DataType="{x:Type local:TaskViewModel}">
+                                    <ItemsControl ItemTemplate="{StaticResource StatusTemplate}" ItemsSource="{Binding Task.Steps}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <StackPanel Orientation="Horizontal" />
@@ -109,9 +109,9 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding SelectedUpdate.Process.Steps}" SelectedItem="{Binding SelectedUpdate.SelectedStep}">
+                <ListBox ItemsSource="{Binding SelectedTask.Task.Steps}" SelectedItem="{Binding SelectedTask.SelectedStep}">
                     <ListBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type local:AbstractProcess}">
+                        <DataTemplate DataType="{x:Type local:AbstractTask}">
                             <StackPanel Orientation="Horizontal">
                                 <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource StatusTemplate}" />
                                 <TextBlock Text="{Binding DisplayText}" />
@@ -125,10 +125,10 @@
                         <RowDefinition MaxHeight="200" />
                     </Grid.RowDefinitions>
                     <GroupBox Header="Output">
-                        <ItemsControl ItemsSource="{Binding SelectedUpdate.SelectedStep.Datas}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedTask.SelectedStep.Data}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Error">
-                        <ItemsControl ItemsSource="{Binding SelectedUpdate.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedTask.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                 </Grid>
             </Grid>

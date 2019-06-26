@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    public class PaketInstall : AbstractCliProcess
+    public class PaketInstall : AbstractCliTask
     {
         private PaketInstall(DirectoryInfo repository, FileInfo paketExe)
             : base(paketExe.FullName," install", repository)

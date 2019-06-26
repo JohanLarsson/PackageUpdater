@@ -5,7 +5,7 @@
              xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:packageUpdater="clr-namespace:PackageUpdater"
-             d:DataContext="{d:DesignInstance Type=packageUpdater:AbstractCliProcess,
+             d:DataContext="{d:DesignInstance Type=packageUpdater:AbstractCliTask,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="800"

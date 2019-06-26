@@ -17,7 +17,7 @@
         public ViewModel()
         {
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
-            this.UpdatePackage = new UpdatePackagesViewModel(this.AllRepositories);
+            this.TaskList = new TaskListViewModel(this.AllRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
         }
 
@@ -43,7 +43,7 @@
 
         public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
 
-        public UpdatePackagesViewModel UpdatePackage { get; }
+        public TaskListViewModel TaskList { get; }
 
         public DebugViewModel Debug { get; } = new DebugViewModel();
 
@@ -55,7 +55,7 @@
             }
 
             this.disposed = true;
-            this.UpdatePackage.Dispose();
+            this.TaskList.Dispose();
             this.Debug?.Dispose();
         }
 

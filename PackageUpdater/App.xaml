@@ -82,7 +82,7 @@
             </Path>
         </DataTemplate>
 
-        <DataTemplate x:Key="StatusTemplate" DataType="{x:Type local:AbstractProcess}">
+        <DataTemplate x:Key="StatusTemplate" DataType="{x:Type local:AbstractTask}">
             <Border Width="10"
                     Height="10"
                     Margin="2,0"

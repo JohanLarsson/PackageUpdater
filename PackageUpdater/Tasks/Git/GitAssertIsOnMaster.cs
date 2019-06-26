@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    public class GitAssertIsOnMaster : AbstractCliProcess
+    public class GitAssertIsOnMaster : AbstractCliTask
     {
         public GitAssertIsOnMaster(DirectoryInfo directory)
             : base("git.exe", "branch", directory)

@@ -5,7 +5,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
-    public class PaketUpdate : AbstractCliProcess
+    public class PaketUpdate : AbstractCliTask
     {
         private PaketUpdate(Repository repository, FileInfo paketExe, string packageId, string group)
             : base(

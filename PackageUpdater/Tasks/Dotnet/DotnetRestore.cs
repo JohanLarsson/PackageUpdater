@@ -2,7 +2,7 @@
 {
     using System.IO;
 
-    public class DotnetRestore : AbstractCliProcess
+    public class DotnetRestore : AbstractCliTask
     {
         public DotnetRestore(DirectoryInfo directory)
             : base("dotnet.exe", "restore", directory)

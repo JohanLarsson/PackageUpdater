@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using Gu.Wpf.Reactive;
 
-    public sealed class PaketReplace : AbstractProcess, System.IDisposable
+    public sealed class PaketReplace : AbstractTask, System.IDisposable
     {
         private readonly FileInfo dependencies;
         private readonly string oldPackageId;

@@ -6,24 +6,24 @@
     using System.Runtime.CompilerServices;
     using Gu.Reactive;
 
-    public sealed class UpdatePackageViewModel : INotifyPropertyChanged, IDisposable
+    public sealed class TaskViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly SerialDisposable<BatchProcess> process = new SerialDisposable<BatchProcess>();
+        private readonly SerialDisposable<Batch> process = new SerialDisposable<Batch>();
         private readonly IDisposable disposable;
         private bool disposed;
-        private AbstractProcess selectedStep;
+        private AbstractTask selectedStep;
 
-        public UpdatePackageViewModel(Repository repository, UpdatePackagesViewModel updatePackage)
+        public TaskViewModel(Repository repository, TaskListViewModel taskList)
         {
             this.Repository = repository;
             this.disposable = Observable.Merge(
-                    updatePackage.ObservePropertyChangedSlim(x => x.PackageId),
-                    updatePackage.ObservePropertyChangedSlim(x => x.Group))
+                    taskList.ObservePropertyChangedSlim(x => x.PackageId),
+                    taskList.ObservePropertyChangedSlim(x => x.Group))
                 .Subscribe(_ =>
                 {
-                    if (PaketUpdate.TryCreate(repository, updatePackage.PackageId, updatePackage.Group, out var update))
+                    if (PaketUpdate.TryCreate(repository, taskList.PackageId, taskList.Group, out var update))
                     {
-                        this.Process = new BatchProcess(
+                        this.Task = new Batch(
                             new GitAssertEmptyDiff(repository.Directory),
                             new GitAssertIsOnMaster(repository.Directory),
                             new GitPullFastForwardOnly(repository.Directory),
@@ -33,7 +33,7 @@
                     }
                     else
                     {
-                        this.Process = null;
+                        this.Task = null;
                     }
                 });
         }
@@ -42,7 +42,7 @@
 
         public Repository Repository { get; }
 
-        public BatchProcess Process
+        public Batch Task
         {
             get => this.process.Disposable;
             set
@@ -57,7 +57,7 @@
             }
         }
 
-        public AbstractProcess SelectedStep
+        public AbstractTask SelectedStep
         {
             get => this.selectedStep;
             set
