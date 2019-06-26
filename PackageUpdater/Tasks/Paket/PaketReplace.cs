@@ -1,15 +1,22 @@
 ﻿namespace PackageUpdater
 {
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using Gu.Wpf.Reactive;
 
     public sealed class PaketReplace : AbstractProcess, System.IDisposable
     {
+        private readonly FileInfo dependencies;
+        private readonly string oldPackageId;
+        private readonly string newPackageId;
         private bool disposed;
 
-        public PaketReplace(FileInfo dependencies, string oldPackageId, string newPackageId, FileInfo paketExe)
+        private PaketReplace(FileInfo dependencies, string oldPackageId, string newPackageId)
         {
+            this.dependencies = dependencies;
+            this.oldPackageId = oldPackageId;
+            this.newPackageId = newPackageId;
             this.StartCommand = new AsyncCommand(() => this.RunAsync());
             this.DisplayText = $"s/{oldPackageId}/{newPackageId}";
         }
@@ -22,7 +29,7 @@
         {
             if (!string.IsNullOrWhiteSpace(oldPackageId) &&
                 !string.IsNullOrWhiteSpace(newPackageId) &&
-                repository.TryGetPaketFiles(out var dependencies, out _, out var paketExe))
+                repository.TryGetPaketFiles(out var dependencies, out _, out _))
             {
                 var deps = File.ReadAllText(dependencies.FullName);
                 if (!deps.Contains($"nuget {oldPackageId}") ||
@@ -32,7 +39,7 @@
                     return false;
                 }
 
-                update = new PaketReplace(dependencies, oldPackageId, newPackageId, paketExe);
+                update = new PaketReplace(dependencies, oldPackageId, newPackageId);
                 return true;
             }
 
@@ -40,10 +47,38 @@
             return false;
         }
 
-        public override Task RunAsync()
+        public override async Task RunAsync()
         {
             this.ThrowIfDisposed();
-            throw new System.NotImplementedException();
+            this.Status = Status.Running;
+            await ReplaceAsync(this.dependencies.FullName);
+
+            foreach (var subDir in this.dependencies.Directory.EnumerateDirectories())
+            {
+                if (subDir.EnumerateFiles("paket.references").FirstOrDefault() is FileInfo references)
+                {
+                    await ReplaceAsync(references.FullName).ConfigureAwait(false);
+                }
+            }
+
+            this.Status = Status.Success;
+
+            async Task ReplaceAsync(string fileName)
+            {
+                var text = await ReadAsync(fileName).ConfigureAwait(false);
+                using (var writer = new StreamWriter(fileName, false))
+                {
+                    await writer.WriteAsync(text.Replace(this.oldPackageId, this.newPackageId));
+                }
+            }
+
+            async Task<string> ReadAsync(string fileName)
+            {
+                using (var reader = File.OpenText(fileName))
+                {
+                    return await reader.ReadToEndAsync().ConfigureAwait(false);
+                }
+            }
         }
 
         public void Dispose()

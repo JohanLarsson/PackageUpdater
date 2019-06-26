@@ -99,6 +99,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+
             <GridSplitter Grid.Column="1"
                           HorizontalAlignment="Stretch"
                           ResizeBehavior="PreviousAndNext"
