@@ -24,5 +24,36 @@
             <Setter Property="Fill" Value="Black" />
             <Setter Property="StrokeThickness" Value="0" />
         </Style>
+
+        <Style x:Key="ConsoleStyle" TargetType="{x:Type ItemsControl}">
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ItemsControl}">
+                        <ScrollViewer local:ScrollViewer.AutoScrollToBottom="True" Background="Black">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate DataType="{x:Type diagnostics:DataReceivedEventArgs}">
+                                    <TextBox Background="Transparent"
+                                             BorderThickness="0"
+                                             Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=Foreground}"
+                                             IsReadOnly="True"
+                                             IsReadOnlyCaretVisible="True"
+                                             Text="{Binding Data, Mode=OneTime}" />
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

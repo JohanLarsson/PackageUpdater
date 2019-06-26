@@ -13,7 +13,6 @@
     public sealed class UpdatePackageViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly MappingView<Repository, RepositoryPackageUpdate> mapped;
-
         private string group;
         private string packageId;
         private RepositoryPackageUpdate selectedPackage;

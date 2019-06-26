@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -28,15 +29,16 @@
                 return true;
             }
 
+            var deps = File.ReadAllText(repository.Dependencies.FullName);
             if (!string.IsNullOrWhiteSpace(group) &&
-                !Regex.IsMatch(repository.DependenciesContent, $"^ *group {group} *\r?\n", RegexOptions.Multiline))
+                !Regex.IsMatch(deps, $"^ *group {group} *\r?\n", RegexOptions.Multiline))
             {
                 update = null;
                 return false;
             }
 
             if (!string.IsNullOrWhiteSpace(packageId) &&
-                !repository.DependenciesContent.Contains($"nuget {packageId}"))
+                !deps.Contains($"nuget {packageId}"))
             {
                 update = null;
                 return false;

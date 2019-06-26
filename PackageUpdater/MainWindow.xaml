@@ -28,13 +28,6 @@
                     Command="{Binding BrowseForGitDirectoryCommand}"
                     Content="..." />
         </Grid>
-        <TabControl Grid.Row="1">
-            <TabItem Header="Update">
-                <local:UpdatePackageView DataContext="{Binding UpdatePackage}" />
-            </TabItem>
-            <TabItem Header="Debug">
-                <local:DebugProcessView DataContext="{Binding Debug.AssertEmptyDiff}" />
-            </TabItem>
-        </TabControl>
+        <local:UpdatePackageView Grid.Row="1" DataContext="{Binding UpdatePackage}" />
     </Grid>
 </Window>

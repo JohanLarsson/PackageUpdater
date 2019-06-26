@@ -38,10 +38,10 @@
         <TextBlock Grid.Row="4" Text="{Binding WorkingDirectory.FullName, Mode=OneTime, StringFormat='WorkingDirectory: {0}'}" />
         <UniformGrid Grid.Row="5" Rows="1">
             <GroupBox Header="Data">
-                <ListBox ItemsSource="{Binding Datas}" />
+                <ItemsControl Style="{StaticResource ConsoleStyle}" ItemsSource="{Binding Datas}" />
             </GroupBox>
             <GroupBox Header="Errors">
-                <ListBox ItemsSource="{Binding Errors}" />
+                <ItemsControl Style="{StaticResource ConsoleStyle}" ItemsSource="{Binding Errors}" />
             </GroupBox>
         </UniformGrid>
     </Grid>

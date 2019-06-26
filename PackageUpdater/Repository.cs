@@ -6,13 +6,10 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Windows.Input;
-    using Gu.Wpf.Reactive;
 
     public sealed class Repository : INotifyPropertyChanged, System.IDisposable
     {
         private bool disposed;
-        private string dependenciesContent;
 
         private Repository(DirectoryInfo gitDirectory, FileInfo dependencies, FileInfo lockFile, FileInfo paketExe)
         {
@@ -21,7 +18,6 @@
             this.LockFile = lockFile;
             this.PaketExe = paketExe;
             this.SolutionFiles = new ReadOnlyObservableCollection<FileInfo>(new ObservableCollection<FileInfo>(gitDirectory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly)));
-            this.CleanCommand = new RelayCommand(() => this.Clean());
             this.DotnetRestore = new DotnetRestore(this.GitDirectory);
             this.EmptyDiff = new GitAssertEmptyDiff(this.GitDirectory);
             this.IsOnMaster = new GitAssertIsOnMaster(this.GitDirectory);
@@ -48,13 +44,9 @@
 
         public FileInfo Dependencies { get; }
 
-        public string DependenciesContent  => this.dependenciesContent ?? (this.dependenciesContent = File.ReadAllText(this.Dependencies.FullName));
-
         public FileInfo LockFile { get; }
 
         public FileInfo PaketExe { get; }
-
-        public ICommand CleanCommand { get; }
 
         public DotnetRestore DotnetRestore { get; }
 
@@ -93,33 +85,6 @@
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void Clean()
-        {
-            try
-            {
-                foreach (var sln in this.SolutionFiles)
-                {
-                    if (sln.Directory.EnumerateDirectories(".vs").FirstOrDefault() is DirectoryInfo dir)
-                    {
-                        dir.Delete();
-                    }
-                }
-
-                foreach (var csproj in this.GitDirectory.EnumerateFiles("*.csproj", SearchOption.AllDirectories))
-                {
-                    if (csproj.DirectoryName is string directoryName)
-                    {
-                        Directory.Delete(Path.Combine(directoryName, "bin"));
-                        Directory.Delete(Path.Combine(directoryName, "obj"));
-                    }
-                }
-            }
-            catch
-            {
-                // just swallowing
-            }
         }
 
         private void ThrowIfDisposed()

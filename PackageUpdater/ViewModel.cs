@@ -3,7 +3,6 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
-    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
@@ -20,9 +19,6 @@
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
             this.UpdatePackage = new UpdatePackageViewModel(this.AllRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
-            this.CleanAllCommand = new RelayCommand(
-                () => this.DeleteAll(),
-                () => this.AllRepositories.Any());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,8 +42,6 @@
         }
 
         public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
-
-        public ICommand CleanAllCommand { get; }
 
         public UpdatePackageViewModel UpdatePackage { get; }
 
@@ -107,14 +101,6 @@
                         }
                     }
                 }
-            }
-        }
-
-        private void DeleteAll()
-        {
-            foreach (var repository in this.AllRepositories)
-            {
-                repository.CleanCommand.Execute(null);
             }
         }
 

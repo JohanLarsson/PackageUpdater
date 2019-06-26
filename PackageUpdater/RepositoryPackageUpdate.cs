@@ -11,6 +11,7 @@
         private readonly SerialDisposable<BatchProcess> process = new SerialDisposable<BatchProcess>();
         private readonly IDisposable disposable;
         private bool disposed;
+        private AbstractProcess selectedStep;
 
         public RepositoryPackageUpdate(Repository repository, UpdatePackageViewModel updatePackageViewModel)
         {
@@ -52,6 +53,21 @@
                 }
 
                 this.process.Disposable = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public AbstractProcess SelectedStep
+        {
+            get => this.selectedStep;
+            set
+            {
+                if (ReferenceEquals(value, this.selectedStep))
+                {
+                    return;
+                }
+
+                this.selectedStep = value;
                 this.OnPropertyChanged();
             }
         }

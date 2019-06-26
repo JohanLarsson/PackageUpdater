@@ -107,6 +107,7 @@
     <Compile Include="Wpf\BooleanToPathConverter.cs" />
     <Compile Include="Wpf\BooleanToVisibilityConverter.cs" />
     <Compile Include="Wpf\BoolTemplateSelector.cs" />
+    <Compile Include="Wpf\ScrollViewer.cs" />
     <Compile Include="Wpf\StatusTemplateSelector.cs" />
     <Compile Include="Wpf\StringToVisibilityConverter.cs" />
     <Compile Include="Tasks\Paket\PaketUpdate.cs" />
