@@ -88,12 +88,12 @@
     </Compile>
     <Compile Include="Tasks\AbstractProcess.cs" />
     <Compile Include="Tasks\BatchProcess.cs" />
-    <Compile Include="Tasks\DotnetRestore.cs" />
-    <Compile Include="Tasks\GitAssertIsOnMaster.cs" />
-    <Compile Include="Tasks\GitCleanDxf.cs" />
-    <Compile Include="Tasks\GitAssertEmptyDiff.cs" />
-    <Compile Include="Tasks\GitFetchOrigin.cs" />
-    <Compile Include="Tasks\GitPullOrigin.cs" />
+    <Compile Include="Tasks\Dotnet\DotnetRestore.cs" />
+    <Compile Include="Tasks\Git\GitAssertIsOnMaster.cs" />
+    <Compile Include="Tasks\Git\GitCleanDxf.cs" />
+    <Compile Include="Tasks\Git\GitAssertEmptyDiff.cs" />
+    <Compile Include="Tasks\Git\GitFetchOrigin.cs" />
+    <Compile Include="Tasks\Git\GitPullOrigin.cs" />
     <Compile Include="UpdatePackageView.xaml.cs">
       <DependentUpon>UpdatePackageView.xaml</DependentUpon>
     </Compile>
@@ -109,7 +109,7 @@
     <Compile Include="Wpf\BoolTemplateSelector.cs" />
     <Compile Include="Wpf\StatusTemplateSelector.cs" />
     <Compile Include="Wpf\StringToVisibilityConverter.cs" />
-    <Compile Include="Tasks\PaketUpdate.cs" />
+    <Compile Include="Tasks\Paket\PaketUpdate.cs" />
     <Compile Include="Tasks\Status.cs" />
     <Page Include="DebugProcessView.xaml">
       <SubType>Designer</SubType>

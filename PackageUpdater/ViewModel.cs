@@ -81,6 +81,11 @@
 
         private void UpdateRepositories()
         {
+            foreach (var repository in this.allRepositories)
+            {
+                repository.Dispose();
+            }
+
             this.allRepositories.Clear();
             if (this.gitDirectory is string path &&
                 Directory.Exists(path))
