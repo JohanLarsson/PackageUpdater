@@ -24,12 +24,12 @@
                     if (PaketUpdate.TryCreate(repository, updatePackageViewModel.PackageId, updatePackageViewModel.Group, out var update))
                     {
                         this.Process = new BatchProcess(
-                            new GitAssertEmptyDiff(repository.GitDirectory),
-                            new GitAssertIsOnMaster(repository.GitDirectory),
-                            new GitPullFastForwardOnly(repository.GitDirectory),
-                            new GitCleanDxf(repository.GitDirectory),
+                            new GitAssertEmptyDiff(repository.Directory),
+                            new GitAssertIsOnMaster(repository.Directory),
+                            new GitPullFastForwardOnly(repository.Directory),
+                            new GitCleanDxf(repository.Directory),
                             update,
-                            new DotnetRestore(repository.GitDirectory));
+                            new DotnetRestore(repository.Directory));
                     }
                     else
                     {

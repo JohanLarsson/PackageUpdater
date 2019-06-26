@@ -10,6 +10,32 @@
              d:DesignWidth="800"
              mc:Ignorable="d">
     <UserControl.Resources>
+        <DataTemplate x:Key="SpinningTemplate">
+            <Path Data="{StaticResource RecycleGeometry}"
+                  Fill="{StaticResource GreenBrush}"
+                  RenderTransformOrigin="0.5,0.5"
+                  Style="{StaticResource IconPathStyle}">
+                <Path.RenderTransform>
+                    <RotateTransform Angle="0" />
+                </Path.RenderTransform>
+                <Path.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard x:Name="SpinWhileWaiting">
+                                    <DoubleAnimation RepeatBehavior="Forever"
+                                                     Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
+                                                     From="0"
+                                                     To="360"
+                                                     Duration="0:0:2" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Path.Triggers>
+            </Path>
+        </DataTemplate>
+
         <DataTemplate x:Key="StatusTemplate" DataType="{x:Type local:AbstractProcess}">
             <Border Width="10"
                     Height="10"
@@ -18,7 +44,7 @@
                     ToolTip="{Binding DisplayText}">
                 <ContentPresenter Content="{Binding Status}">
                     <ContentPresenter.ContentTemplateSelector>
-                        <local:StatusTemplateSelector>
+                        <local:StatusTemplateSelector Running="{StaticResource SpinningTemplate}">
                             <local:StatusTemplateSelector.Waiting>
                                 <DataTemplate>
                                     <Ellipse Width="4"
@@ -28,14 +54,6 @@
                                              Style="{StaticResource IconPathStyle}" />
                                 </DataTemplate>
                             </local:StatusTemplateSelector.Waiting>
-
-                            <local:StatusTemplateSelector.Running>
-                                <DataTemplate>
-                                    <Path Data="{StaticResource RecycleGeometry}"
-                                          Fill="{StaticResource GreenBrush}"
-                                          Style="{StaticResource IconPathStyle}" />
-                                </DataTemplate>
-                            </local:StatusTemplateSelector.Running>
 
                             <local:StatusTemplateSelector.Success>
                                 <DataTemplate>
@@ -114,23 +132,24 @@
                                             <Button.Template>
                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                     <Border Background="Transparent">
-                                                        <Path x:Name="Path"
-                                                              Data="{StaticResource PlayGeometry}"
-                                                              Fill="{StaticResource GreenBrush}"
-                                                              Style="{StaticResource IconPathStyle}" />
+                                                        <ContentPresenter />
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsEnabled" Value="False">
-                                                            <Setter TargetName="Path" Property="Data" Value="{StaticResource RecycleGeometry}" />
+                                                            <Setter Property="ContentTemplate" Value="{StaticResource SpinningTemplate}" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Button.Template>
+                                            <Path x:Name="Path"
+                                                  Data="{StaticResource PlayGeometry}"
+                                                  Fill="{StaticResource GreenBrush}"
+                                                  Style="{StaticResource IconPathStyle}" />
                                         </Button>
                                         <TextBlock Text="">
-                                            <Hyperlink NavigateUri="{Binding Repository.GitDirectory.FullName}" RequestNavigate="OnRequestNavigate">
+                                            <Hyperlink NavigateUri="{Binding Repository.Directory.FullName}" RequestNavigate="OnRequestNavigate">
                                                 <Hyperlink.Inlines>
-                                                    <Run Text="{Binding Repository.GitDirectory.FullName, Mode=OneWay}" />
+                                                    <Run Text="{Binding Repository.Directory.FullName, Mode=OneWay}" />
                                                 </Hyperlink.Inlines>
                                             </Hyperlink>
                                         </TextBlock>

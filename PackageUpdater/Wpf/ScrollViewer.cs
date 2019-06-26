@@ -1,7 +1,6 @@
 ﻿namespace PackageUpdater
 {
     using System;
-    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Controls;
 
@@ -41,7 +40,6 @@
             if (sender is System.Windows.Controls.ScrollViewer scrollViewer &&
                 e.ExtentHeightChange > 0)
             {
-                Debug.Print($"VerticalOffset: {scrollViewer.VerticalOffset} ExtentHeight: {scrollViewer.ExtentHeight} ContentVerticalOffset: {scrollViewer.ContentVerticalOffset} {scrollViewer.VerticalOffset + scrollViewer.ActualHeight == scrollViewer.ExtentHeight}");
                 scrollViewer.AutoScrollToBottom();
             }
         }

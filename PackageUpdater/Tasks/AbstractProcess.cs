@@ -140,12 +140,12 @@
 
             void OnProcessOnExited(object sender, EventArgs e)
             {
+                // Huge hack below to make sure all events are in collections before exiting.
+                Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
                 process.OutputDataReceived -= OnDataReceived;
                 process.ErrorDataReceived -= OnErrorReceived;
                 process.Exited -= OnProcessOnExited;
                 this.serialDisposable.Disposable = null;
-                // Huge hack below to make sure all events are in collections before exiting.
-                Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
                 this.Status = this.Errors.Any() ? Status.Error : Status.Success;
                 tcs.SetResult(true);
             }

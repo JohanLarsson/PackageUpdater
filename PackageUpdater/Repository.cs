@@ -11,16 +11,13 @@
     {
         private bool disposed;
 
-        private Repository(DirectoryInfo gitDirectory, FileInfo dependencies, FileInfo lockFile, FileInfo paketExe)
+        private Repository(DirectoryInfo directory)
         {
-            this.GitDirectory = gitDirectory;
-            this.Dependencies = dependencies;
-            this.LockFile = lockFile;
-            this.PaketExe = paketExe;
-            this.SolutionFiles = new ReadOnlyObservableCollection<FileInfo>(new ObservableCollection<FileInfo>(gitDirectory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly)));
-            this.DotnetRestore = new DotnetRestore(this.GitDirectory);
-            this.EmptyDiff = new GitAssertEmptyDiff(this.GitDirectory);
-            this.IsOnMaster = new GitAssertIsOnMaster(this.GitDirectory);
+            this.Directory = directory;
+            this.SolutionFiles = new ReadOnlyObservableCollection<FileInfo>(new ObservableCollection<FileInfo>(directory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly)));
+            this.DotnetRestore = new DotnetRestore(this.Directory);
+            this.EmptyDiff = new GitAssertEmptyDiff(this.Directory);
+            this.IsOnMaster = new GitAssertIsOnMaster(this.Directory);
             InitializeAsync();
             async void InitializeAsync()
             {
@@ -38,15 +35,9 @@
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public DirectoryInfo GitDirectory { get; }
+        public DirectoryInfo Directory { get; }
 
         public ReadOnlyObservableCollection<FileInfo> SolutionFiles { get; }
-
-        public FileInfo Dependencies { get; }
-
-        public FileInfo LockFile { get; }
-
-        public FileInfo PaketExe { get; }
 
         public DotnetRestore DotnetRestore { get; }
 
@@ -56,12 +47,9 @@
 
         public static bool TryCreate(string directory, out Repository repository)
         {
-            if (Directory.EnumerateFiles(directory, "paket.dependencies").FirstOrDefault() is string dependencies &&
-                Directory.EnumerateFiles(directory, "paket.lock").FirstOrDefault() is string lockFile &&
-                Directory.EnumerateDirectories(directory, ".paket").FirstOrDefault() is string paketDir &&
-                Directory.EnumerateFiles(paketDir, "paket.exe").FirstOrDefault() is string paketExe)
+            if (System.IO.Directory.EnumerateDirectories(directory, ".git").Any())
             {
-                repository = new Repository(new DirectoryInfo(directory), new FileInfo(dependencies), new FileInfo(lockFile), new FileInfo(paketExe));
+                repository = new Repository(new DirectoryInfo(directory));
                 return true;
             }
 
