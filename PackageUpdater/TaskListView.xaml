@@ -29,13 +29,13 @@
                        Text="Package" />
             <TextBox Grid.Row="0"
                      Grid.Column="1"
-                     Text="{Binding PackageId, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                     Text="{Binding UpdatePackageInfo.PackageId, UpdateSourceTrigger=PropertyChanged}" />
             <TextBlock Grid.Row="1"
                        Grid.Column="0"
                        Text="Group" />
             <TextBox Grid.Row="1"
                      Grid.Column="1"
-                     Text="{Binding Group, UpdateSourceTrigger=PropertyChanged, Delay=200}" />
+                     Text="{Binding UpdatePackageInfo.Group, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
 
         <Grid Grid.Row="1">

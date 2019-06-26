@@ -13,19 +13,17 @@
     public sealed class TaskListViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly MappingView<Repository, TaskViewModel> mapped;
-        private string group;
-        private string packageId;
         private TaskViewModel selectedTask;
         private bool disposed;
 
         public TaskListViewModel(ReadOnlyObservableCollection<Repository> repositories)
         {
-            mapped = repositories.AsMappingView(
+            this.mapped = repositories.AsMappingView(
                 x => new TaskViewModel(x, this),
                 x => x.Dispose());
-            this.Tasks = mapped.AsReadOnlyFilteredView(
+            this.Tasks = this.mapped.AsReadOnlyFilteredView(
                 x => x.Task != null,
-                mapped.ObserveItemPropertyChangedSlim(x => x.Task));
+                this.mapped.ObserveItemPropertyChangedSlim(x => x.Task));
             this.UpdateAllCommand = new AsyncCommand(() => this.UpdateAllAsync());
         }
 
@@ -34,6 +32,8 @@
         public ICommand UpdateAllCommand { get; }
 
         public IReadOnlyView<TaskViewModel> Tasks { get; }
+
+        public UpdatePackageInfo UpdatePackageInfo { get; } = new UpdatePackageInfo();
 
         public TaskViewModel SelectedTask
         {
@@ -50,36 +50,6 @@
             }
         }
 
-        public string Group
-        {
-            get => this.group;
-            set
-            {
-                if (value == this.group)
-                {
-                    return;
-                }
-
-                this.group = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public string PackageId
-        {
-            get => this.packageId;
-            set
-            {
-                if (value == this.packageId)
-                {
-                    return;
-                }
-
-                this.packageId = value;
-                this.OnPropertyChanged();
-            }
-        }
-
         public void Dispose()
         {
             if (this.disposed)
@@ -88,7 +58,7 @@
             }
 
             this.disposed = true;
-            (this.UpdateAllCommand as System.IDisposable)?.Dispose();
+            (this.UpdateAllCommand as IDisposable)?.Dispose();
             this.Tasks?.Dispose();
             this.mapped?.Dispose();
         }
@@ -107,7 +77,7 @@
         {
             if (this.disposed)
             {
-                throw new System.ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

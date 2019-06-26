@@ -104,6 +104,7 @@
     <Compile Include="TaskListViewModel.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UpdatePackageInfo.cs" />
     <Compile Include="ViewModel.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

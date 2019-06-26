@@ -12,30 +12,14 @@
         private readonly IDisposable disposable;
         private bool disposed;
         private AbstractTask selectedStep;
+        private static readonly PropertyChangedEventArgs PropertyChangedEventArgs = new PropertyChangedEventArgs(string.Empty);
 
         public TaskViewModel(Repository repository, TaskListViewModel taskList)
         {
             this.Repository = repository;
-            this.disposable = Observable.Merge(
-                    taskList.ObservePropertyChangedSlim(x => x.PackageId),
-                    taskList.ObservePropertyChangedSlim(x => x.Group))
-                .Subscribe(_ =>
-                {
-                    if (PaketUpdate.TryCreate(repository, taskList.PackageId, taskList.Group, out var update))
-                    {
-                        this.Task = new Batch(
-                            new GitAssertEmptyDiff(repository.Directory),
-                            new GitAssertIsOnMaster(repository.Directory),
-                            new GitPullFastForwardOnly(repository.Directory),
-                            new GitCleanDxf(repository.Directory),
-                            update,
-                            new DotnetRestore(repository.Directory));
-                    }
-                    else
-                    {
-                        this.Task = null;
-                    }
-                });
+            this.disposable = taskList.UpdatePackageInfo.ObservePropertyChangedSlim()
+                                      .StartWith(PropertyChangedEventArgs)
+                                      .Subscribe(_ => this.Task = taskList.UpdatePackageInfo.CreateBatch(repository));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
