@@ -10,6 +10,7 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Windows;
+    using System.Windows.Threading;
     using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
@@ -125,7 +126,7 @@
             {
                 if (e.Data != null)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Datas.Add(e)));
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Datas.Add(e)), DispatcherPriority.Normal);
                 }
             }
 
@@ -133,7 +134,7 @@
             {
                 if (e.Data != null)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Errors.Add(e)));
+                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.Errors.Add(e)), DispatcherPriority.Normal);
                 }
             }
 
@@ -144,7 +145,7 @@
                 process.Exited -= OnProcessOnExited;
                 this.serialDisposable.Disposable = null;
                 // Huge hack below to make sure all events are in collections before exiting.
-                Application.Current.Dispatcher.Invoke(() => { });
+                Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
                 this.Status = this.Errors.Any() ? Status.Error : Status.Success;
                 tcs.SetResult(true);
             }

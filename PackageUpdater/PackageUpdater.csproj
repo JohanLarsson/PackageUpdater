@@ -91,6 +91,7 @@
     <Compile Include="Tasks\Dotnet\DotnetRestore.cs" />
     <Compile Include="Tasks\Git\GitAssertIsOnMaster.cs" />
     <Compile Include="Tasks\Git\GitCleanDxf.cs" />
+    <Compile Include="Tasks\Git\GitPullFastForwardOnly.cs" />
     <Compile Include="Tasks\Git\GitAssertEmptyDiff.cs" />
     <Compile Include="Tasks\Git\GitFetchOrigin.cs" />
     <Compile Include="Tasks\Git\GitPullOrigin.cs" />

@@ -26,9 +26,9 @@
                         this.Process = new BatchProcess(
                             new GitAssertEmptyDiff(repository.GitDirectory),
                             new GitAssertIsOnMaster(repository.GitDirectory),
-                            new GitFetchOrigin(repository.GitDirectory),
-                            update,
+                            new GitPullFastForwardOnly(repository.GitDirectory),
                             new GitCleanDxf(repository.GitDirectory),
+                            update,
                             new DotnetRestore(repository.GitDirectory));
                     }
                     else
