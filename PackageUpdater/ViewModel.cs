@@ -17,7 +17,7 @@
         public ViewModel()
         {
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
-            this.UpdatePackage = new UpdatePackageViewModel(this.AllRepositories);
+            this.UpdatePackage = new UpdatePackagesViewModel(this.AllRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
         }
 
@@ -43,7 +43,7 @@
 
         public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
 
-        public UpdatePackageViewModel UpdatePackage { get; }
+        public UpdatePackagesViewModel UpdatePackage { get; }
 
         public DebugViewModel Debug { get; } = new DebugViewModel();
 

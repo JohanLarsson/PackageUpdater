@@ -2,35 +2,31 @@
 {
     using System;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
+    using System.Linq;
     using System.Threading.Tasks;
-    using System.Windows.Input;
     using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
-    public sealed class BatchProcess : INotifyPropertyChanged, IDisposable
+    public sealed class BatchProcess : AbstractProcess, IDisposable
     {
         private readonly Condition canRun;
         private AbstractProcess current;
-        private Exception exception;
-        private Status status = Status.Waiting;
         private bool disposed;
 
         public BatchProcess(params AbstractProcess[] steps)
         {
             this.Steps = new ReadOnlyObservableCollection<AbstractProcess>(new ObservableCollection<AbstractProcess>(steps));
             this.canRun = new Condition(
-                () => this.status != Status.Running,
+                () => this.Status != Status.Running,
                 this.ObservePropertyChangedSlim(x => x.Status));
             this.StartCommand = new AsyncCommand(this.RunAsync, this.canRun);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public ICommand StartCommand { get; }
+        public override AsyncCommand StartCommand { get; }
 
         public ReadOnlyObservableCollection<AbstractProcess> Steps { get; }
+
+        public override string DisplayText => string.Join(",", this.Steps.Select(x => x.DisplayText));
 
         public AbstractProcess Current
         {
@@ -47,38 +43,9 @@
             }
         }
 
-        public Exception Exception
+        public override async Task RunAsync()
         {
-            get => this.exception;
-            set
-            {
-                if (ReferenceEquals(value, this.exception))
-                {
-                    return;
-                }
-
-                this.exception = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public Status Status
-        {
-            get => this.status;
-            set
-            {
-                if (value == this.status)
-                {
-                    return;
-                }
-
-                this.status = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public async Task RunAsync()
-        {
+            this.ThrowIfDisposed();
             this.Status = Status.Running;
             this.Exception = null;
             foreach (var step in this.Steps)
@@ -109,6 +76,16 @@
             this.Status = Status.Success;
         }
 
+        public override void Reset()
+        {
+            this.ThrowIfDisposed();
+            base.Reset();
+            foreach (var step in this.Steps)
+            {
+                step.Reset();
+            }
+        }
+
         public void Dispose()
         {
             if (this.disposed)
@@ -117,13 +94,8 @@
             }
 
             this.disposed = true;
-            (this.StartCommand as IDisposable)?.Dispose();
             this.canRun.Dispose();
-        }
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.StartCommand.Dispose();
         }
 
         private void ThrowIfDisposed()

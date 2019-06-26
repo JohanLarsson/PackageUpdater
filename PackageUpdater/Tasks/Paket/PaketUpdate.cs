@@ -5,9 +5,9 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
-    public class PaketUpdate : AbstractProcess
+    public class PaketUpdate : AbstractCliProcess
     {
-        public PaketUpdate(Repository repository, FileInfo paketExe, string packageId, string group)
+        private PaketUpdate(Repository repository, FileInfo paketExe, string packageId, string group)
             : base(
                 paketExe.FullName,
                 $"update" + (string.IsNullOrWhiteSpace(packageId) ? string.Empty : $" {packageId}") + (string.IsNullOrWhiteSpace(group) ? string.Empty : $" --group {group}"),
@@ -21,13 +21,13 @@
 
         public string Group { get; }
 
-        public static bool TryCreate(Repository repository, string packageId, string group, out PaketUpdate update)
+        public static bool TryCreate(Repository repository, string packageId, string group, out PaketUpdate result)
         {
             if (repository.TryGetPaketFiles(out var dependencies, out _, out var paketExe))
             {
                 if (string.IsNullOrWhiteSpace(group) && string.IsNullOrWhiteSpace(packageId))
                 {
-                    update = new PaketUpdate(repository, paketExe, null, null);
+                    result = new PaketUpdate(repository, paketExe, null, null);
                     return true;
                 }
 
@@ -35,33 +35,33 @@
                 if (!string.IsNullOrWhiteSpace(group) &&
                     !Regex.IsMatch(deps, $"^ *group {group} *\r?\n", RegexOptions.Multiline))
                 {
-                    update = null;
+                    result = null;
                     return false;
                 }
 
                 if (!string.IsNullOrWhiteSpace(packageId) &&
                     !deps.Contains($"nuget {packageId}"))
                 {
-                    update = null;
+                    result = null;
                     return false;
                 }
 
-                update = new PaketUpdate(repository, paketExe, packageId, group);
+                result = new PaketUpdate(repository, paketExe, packageId, group);
                 return true;
             }
 
-            update = null;
+            result = null;
             return false;
         }
 
         public override async Task RunAsync()
         {
             await base.RunAsync().ConfigureAwait(false);
-            if (this.Datas.Any(x => x.Data.Contains("paket.lock is already up-to-date")))
+            if (this.Data.Any(x => x.Data.Contains("paket.lock is already up-to-date")))
             {
                 this.Status = Status.NoChange;
             }
-            else if (this.Datas.Any(x => x.Data.Contains("Locked version resolution written to")))
+            else if (this.Data.Any(x => x.Data.Contains("Locked version resolution written to")))
             {
                 this.Status = Status.Success;
             }

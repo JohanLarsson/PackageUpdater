@@ -1,84 +1,76 @@
 ﻿namespace PackageUpdater
 {
     using System;
-    using System.Collections.ObjectModel;
     using System.ComponentModel;
-    using System.Linq;
+    using System.Reactive.Linq;
     using System.Runtime.CompilerServices;
-    using System.Threading.Tasks;
-    using System.Windows.Input;
     using Gu.Reactive;
-    using Gu.Wpf.Reactive;
 
     public sealed class UpdatePackageViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly MappingView<Repository, RepositoryPackageUpdate> mapped;
-        private string group;
-        private string packageId;
-        private RepositoryPackageUpdate selectedPackage;
+        private readonly SerialDisposable<BatchProcess> process = new SerialDisposable<BatchProcess>();
+        private readonly IDisposable disposable;
         private bool disposed;
+        private AbstractProcess selectedStep;
 
-        public UpdatePackageViewModel(ReadOnlyObservableCollection<Repository> repositories)
+        public UpdatePackageViewModel(Repository repository, UpdatePackagesViewModel updatePackage)
         {
-            mapped = repositories.AsMappingView(
-                x => new RepositoryPackageUpdate(x, this),
-                x => x.Dispose());
-            this.PackageUpdates = mapped.AsReadOnlyFilteredView(
-                x => x.Process != null,
-                mapped.ObserveItemPropertyChangedSlim(x => x.Process));
-            this.UpdateAllCommand = new AsyncCommand(() => this.UpdateAllAsync());
+            this.Repository = repository;
+            this.disposable = Observable.Merge(
+                    updatePackage.ObservePropertyChangedSlim(x => x.PackageId),
+                    updatePackage.ObservePropertyChangedSlim(x => x.Group))
+                .Subscribe(_ =>
+                {
+                    if (PaketUpdate.TryCreate(repository, updatePackage.PackageId, updatePackage.Group, out var update))
+                    {
+                        this.Process = new BatchProcess(
+                            new GitAssertEmptyDiff(repository.Directory),
+                            new GitAssertIsOnMaster(repository.Directory),
+                            new GitPullFastForwardOnly(repository.Directory),
+                            new GitCleanDxf(repository.Directory),
+                            update,
+                            new DotnetRestore(repository.Directory));
+                    }
+                    else
+                    {
+                        this.Process = null;
+                    }
+                });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ICommand UpdateAllCommand { get; }
+        public Repository Repository { get; }
 
-        public RepositoryPackageUpdate SelectedPackage
+        public BatchProcess Process
         {
-            get => this.selectedPackage;
+            get => this.process.Disposable;
             set
             {
-                if (ReferenceEquals(value, this.selectedPackage))
+                if (ReferenceEquals(value, this.process.Disposable))
                 {
                     return;
                 }
 
-                this.selectedPackage = value;
+                this.process.Disposable = value;
                 this.OnPropertyChanged();
             }
         }
 
-        public string Group
+        public AbstractProcess SelectedStep
         {
-            get => this.group;
+            get => this.selectedStep;
             set
             {
-                if (value == this.group)
+                if (ReferenceEquals(value, this.selectedStep))
                 {
                     return;
                 }
 
-                this.group = value;
+                this.selectedStep = value;
                 this.OnPropertyChanged();
             }
         }
-
-        public string PackageId
-        {
-            get => this.packageId;
-            set
-            {
-                if (value == this.packageId)
-                {
-                    return;
-                }
-
-                this.packageId = value;
-                this.OnPropertyChanged();
-            }
-        }
-
-        public IReadOnlyView<RepositoryPackageUpdate> PackageUpdates { get; }
 
         public void Dispose()
         {
@@ -88,9 +80,8 @@
             }
 
             this.disposed = true;
-            (this.UpdateAllCommand as System.IDisposable)?.Dispose();
-            this.PackageUpdates?.Dispose();
-            this.mapped?.Dispose();
+            this.process.Dispose();
+            this.disposable?.Dispose();
         }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -98,16 +89,11 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private async Task UpdateAllAsync()
-        {
-            await Task.WhenAll(this.PackageUpdates.Select(x => x.Process.RunAsync()));
-        }
-
         private void ThrowIfDisposed()
         {
             if (this.disposed)
             {
-                throw new System.ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

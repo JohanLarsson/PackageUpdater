@@ -43,11 +43,11 @@
                             <Setter.Value>
                                 <DataTemplate DataType="{x:Type diagnostics:DataReceivedEventArgs}">
                                     <TextBox Background="Transparent"
-                                             BorderThickness="0"
-                                             Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=Foreground}"
-                                             IsReadOnly="True"
-                                             IsReadOnlyCaretVisible="True"
-                                             Text="{Binding Data, Mode=OneTime}" />
+                                                 BorderThickness="0"
+                                                 Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}, Path=Foreground}"
+                                                 IsReadOnly="True"
+                                                 IsReadOnlyCaretVisible="True"
+                                                 Text="{Binding Data, Mode=OneTime}" />
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
@@ -55,5 +55,79 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <DataTemplate x:Key="SpinningTemplate">
+            <Path Data="{StaticResource RecycleGeometry}"
+                  Fill="{StaticResource GreenBrush}"
+                  RenderTransformOrigin="0.5,0.5"
+                  Style="{StaticResource IconPathStyle}">
+                <Path.RenderTransform>
+                    <RotateTransform Angle="0" />
+                </Path.RenderTransform>
+                <Path.Triggers>
+                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                        <EventTrigger.Actions>
+                            <BeginStoryboard>
+                                <Storyboard x:Name="SpinWhileWaiting">
+                                    <DoubleAnimation RepeatBehavior="Forever"
+                                                     Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
+                                                     From="0"
+                                                     To="360"
+                                                     Duration="0:0:2" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger.Actions>
+                    </EventTrigger>
+                </Path.Triggers>
+            </Path>
+        </DataTemplate>
+
+        <DataTemplate x:Key="StatusTemplate" DataType="{x:Type local:AbstractProcess}">
+            <Border Width="10"
+                    Height="10"
+                    Margin="2,0"
+                    Background="Transparent"
+                    ToolTip="{Binding DisplayText}">
+                <ContentPresenter Content="{Binding Status}">
+                    <ContentPresenter.ContentTemplateSelector>
+                        <local:StatusTemplateSelector Running="{StaticResource SpinningTemplate}">
+                            <local:StatusTemplateSelector.Waiting>
+                                <DataTemplate>
+                                    <Ellipse Width="4"
+                                             Height="4"
+                                             Margin="3"
+                                             Fill="{StaticResource GrayBrush}"
+                                             Style="{StaticResource IconPathStyle}" />
+                                </DataTemplate>
+                            </local:StatusTemplateSelector.Waiting>
+
+                            <local:StatusTemplateSelector.Success>
+                                <DataTemplate>
+                                    <Path Data="{StaticResource CheckGeometry}"
+                                          Fill="{StaticResource GreenBrush}"
+                                          Style="{StaticResource IconPathStyle}" />
+                                </DataTemplate>
+                            </local:StatusTemplateSelector.Success>
+
+                            <local:StatusTemplateSelector.NoChange>
+                                <DataTemplate>
+                                    <Path Data="{StaticResource CheckGeometry}"
+                                          Fill="{StaticResource BlueBrush}"
+                                          Style="{StaticResource IconPathStyle}" />
+                                </DataTemplate>
+                            </local:StatusTemplateSelector.NoChange>
+
+                            <local:StatusTemplateSelector.Error>
+                                <DataTemplate>
+                                    <Path Data="{StaticResource ErrorGeometry}"
+                                          Fill="{StaticResource RedBrush}"
+                                          Style="{StaticResource IconPathStyle}" />
+                                </DataTemplate>
+                            </local:StatusTemplateSelector.Error>
+                        </local:StatusTemplateSelector>
+                    </ContentPresenter.ContentTemplateSelector>
+                </ContentPresenter>
+            </Border>
+        </DataTemplate>
     </Application.Resources>
 </Application>

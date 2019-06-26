@@ -82,8 +82,20 @@
     <Compile Include="DebugViewModel.cs">
       <DependentUpon>DebugProcessView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ReplacePackagesViewModel.cs">
+      <DependentUpon>ReplacePackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ReplacePackageView.xaml.cs">
+      <DependentUpon>ReplacePackageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ReplacePackageViewModel.cs">
+      <DependentUpon>ReplacePackageView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Repository.cs" />
-    <Compile Include="RepositoryPackageUpdate.cs">
+    <Compile Include="Tasks\AbstractCliProcess.cs" />
+    <Compile Include="Tasks\Paket\PaketInstall.cs" />
+    <Compile Include="Tasks\Paket\PaketReplace.cs" />
+    <Compile Include="UpdatePackageViewModel.cs">
       <DependentUpon>UpdatePackageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tasks\AbstractProcess.cs" />
@@ -98,7 +110,7 @@
     <Compile Include="UpdatePackageView.xaml.cs">
       <DependentUpon>UpdatePackageView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UpdatePackageViewModel.cs">
+    <Compile Include="UpdatePackagesViewModel.cs">
       <DependentUpon>UpdatePackageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel.cs">
@@ -129,6 +141,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ReplacePackageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UpdatePackageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

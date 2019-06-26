@@ -3,7 +3,7 @@
     using System.IO;
     using System.Threading.Tasks;
 
-    public class GitFetchOrigin : AbstractProcess
+    public class GitFetchOrigin : AbstractCliProcess
     {
         public GitFetchOrigin(DirectoryInfo directory)
             : base("git.exe", "fetch origin", directory)

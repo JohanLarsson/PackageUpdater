@@ -4,7 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    public class GitAssertEmptyDiff : AbstractProcess
+    public class GitAssertEmptyDiff : AbstractCliProcess
     {
         public GitAssertEmptyDiff(DirectoryInfo directory)
             : base("git.exe", "diff", directory)
@@ -14,7 +14,7 @@
         public override async Task RunAsync()
         {
             await base.RunAsync().ConfigureAwait(false);
-            this.Status = this.Datas.Any() ? Status.Error : Status.Success;
+            this.Status = this.Data.Any() ? Status.Error : Status.Success;
         }
     }
 }

@@ -4,86 +4,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PackageUpdater"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             d:DataContext="{d:DesignInstance Type=local:UpdatePackageViewModel,
+             d:DataContext="{d:DesignInstance Type=local:UpdatePackagesViewModel,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="800"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <DataTemplate x:Key="SpinningTemplate">
-            <Path Data="{StaticResource RecycleGeometry}"
-                  Fill="{StaticResource GreenBrush}"
-                  RenderTransformOrigin="0.5,0.5"
-                  Style="{StaticResource IconPathStyle}">
-                <Path.RenderTransform>
-                    <RotateTransform Angle="0" />
-                </Path.RenderTransform>
-                <Path.Triggers>
-                    <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                        <EventTrigger.Actions>
-                            <BeginStoryboard>
-                                <Storyboard x:Name="SpinWhileWaiting">
-                                    <DoubleAnimation RepeatBehavior="Forever"
-                                                     Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
-                                                     From="0"
-                                                     To="360"
-                                                     Duration="0:0:2" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger.Actions>
-                    </EventTrigger>
-                </Path.Triggers>
-            </Path>
-        </DataTemplate>
-
-        <DataTemplate x:Key="StatusTemplate" DataType="{x:Type local:AbstractProcess}">
-            <Border Width="10"
-                    Height="10"
-                    Margin="2,0"
-                    Background="Transparent"
-                    ToolTip="{Binding DisplayText}">
-                <ContentPresenter Content="{Binding Status}">
-                    <ContentPresenter.ContentTemplateSelector>
-                        <local:StatusTemplateSelector Running="{StaticResource SpinningTemplate}">
-                            <local:StatusTemplateSelector.Waiting>
-                                <DataTemplate>
-                                    <Ellipse Width="4"
-                                             Height="4"
-                                             Margin="3"
-                                             Fill="{StaticResource GrayBrush}"
-                                             Style="{StaticResource IconPathStyle}" />
-                                </DataTemplate>
-                            </local:StatusTemplateSelector.Waiting>
-
-                            <local:StatusTemplateSelector.Success>
-                                <DataTemplate>
-                                    <Path Data="{StaticResource CheckGeometry}"
-                                          Fill="{StaticResource GreenBrush}"
-                                          Style="{StaticResource IconPathStyle}" />
-                                </DataTemplate>
-                            </local:StatusTemplateSelector.Success>
-
-                            <local:StatusTemplateSelector.NoChange>
-                                <DataTemplate>
-                                    <Path Data="{StaticResource CheckGeometry}"
-                                          Fill="{StaticResource BlueBrush}"
-                                          Style="{StaticResource IconPathStyle}" />
-                                </DataTemplate>
-                            </local:StatusTemplateSelector.NoChange>
-
-                            <local:StatusTemplateSelector.Error>
-                                <DataTemplate>
-                                    <Path Data="{StaticResource ErrorGeometry}"
-                                          Fill="{StaticResource RedBrush}"
-                                          Style="{StaticResource IconPathStyle}" />
-                                </DataTemplate>
-                            </local:StatusTemplateSelector.Error>
-                        </local:StatusTemplateSelector>
-                    </ContentPresenter.ContentTemplateSelector>
-                </ContentPresenter>
-            </Border>
-        </DataTemplate>
-    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -120,13 +45,13 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <ListView HorizontalContentAlignment="Stretch"
-                      ItemsSource="{Binding PackageUpdates}"
-                      SelectedItem="{Binding SelectedPackage}">
+                      ItemsSource="{Binding Updates}"
+                      SelectedItem="{Binding SelectedUpdate}">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Repository">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
+                                <DataTemplate DataType="{x:Type local:UpdatePackageViewModel}">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Margin="0,0,4,0" Command="{Binding Process.StartCommand}">
                                             <Button.Template>
@@ -160,7 +85,7 @@
 
                         <GridViewColumn Header="Status">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:RepositoryPackageUpdate}">
+                                <DataTemplate DataType="{x:Type local:UpdatePackageViewModel}">
                                     <ItemsControl ItemTemplate="{StaticResource StatusTemplate}" ItemsSource="{Binding Process.Steps}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
@@ -174,13 +99,16 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <GridSplitter Grid.Column="1" />
+            <GridSplitter Grid.Column="1"
+                          HorizontalAlignment="Stretch"
+                          ResizeBehavior="PreviousAndNext"
+                          ResizeDirection="Columns" />
             <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding SelectedPackage.Process.Steps}" SelectedItem="{Binding SelectedPackage.SelectedStep}">
+                <ListBox ItemsSource="{Binding SelectedUpdate.Process.Steps}" SelectedItem="{Binding SelectedUpdate.SelectedStep}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:AbstractProcess}">
                             <StackPanel Orientation="Horizontal">
@@ -196,10 +124,10 @@
                         <RowDefinition MaxHeight="200" />
                     </Grid.RowDefinitions>
                     <GroupBox Header="Output">
-                        <ItemsControl ItemsSource="{Binding SelectedPackage.SelectedStep.Datas}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedUpdate.SelectedStep.Datas}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Error">
-                        <ItemsControl ItemsSource="{Binding SelectedPackage.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedUpdate.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                 </Grid>
             </Grid>

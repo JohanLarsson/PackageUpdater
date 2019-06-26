@@ -6,36 +6,38 @@
     using System.Runtime.CompilerServices;
     using Gu.Reactive;
 
-    public sealed class RepositoryPackageUpdate : INotifyPropertyChanged, IDisposable
+    public sealed class ReplacePackageViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SerialDisposable<BatchProcess> process = new SerialDisposable<BatchProcess>();
         private readonly IDisposable disposable;
         private bool disposed;
         private AbstractProcess selectedStep;
 
-        public RepositoryPackageUpdate(Repository repository, UpdatePackageViewModel updatePackageViewModel)
+        public ReplacePackageViewModel(Repository repository, ReplacePackagesViewModel replacePackages)
         {
             this.Repository = repository;
             this.disposable = Observable.Merge(
-                    updatePackageViewModel.ObservePropertyChangedSlim(x => x.PackageId),
-                    updatePackageViewModel.ObservePropertyChangedSlim(x => x.Group))
-                .Subscribe(_ =>
-                {
-                    if (PaketUpdate.TryCreate(repository, updatePackageViewModel.PackageId, updatePackageViewModel.Group, out var update))
-                    {
-                        this.Process = new BatchProcess(
-                            new GitAssertEmptyDiff(repository.Directory),
-                            new GitAssertIsOnMaster(repository.Directory),
-                            new GitPullFastForwardOnly(repository.Directory),
-                            new GitCleanDxf(repository.Directory),
-                            update,
-                            new DotnetRestore(repository.Directory));
-                    }
-                    else
-                    {
-                        this.Process = null;
-                    }
-                });
+                                            replacePackages.ObservePropertyChangedSlim(x => x.NewPackageId),
+                                            replacePackages.ObservePropertyChangedSlim(x => x.OldPackageId))
+                                        .Subscribe(_ =>
+                                        {
+                                            if (PaketReplace.TryCreate(repository, replacePackages.NewPackageId, replacePackages.OldPackageId, out var replace) &&
+                                                PaketInstall.TryCreate(repository, out var paketInstall))
+                                            {
+                                                this.Process = new BatchProcess(
+                                                    new GitAssertEmptyDiff(repository.Directory),
+                                                    new GitAssertIsOnMaster(repository.Directory),
+                                                    new GitPullFastForwardOnly(repository.Directory),
+                                                    new GitCleanDxf(repository.Directory),
+                                                    replace,
+                                                    paketInstall,
+                                                    new DotnetRestore(repository.Directory));
+                                            }
+                                            else
+                                            {
+                                                this.Process = null;
+                                            }
+                                        });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
