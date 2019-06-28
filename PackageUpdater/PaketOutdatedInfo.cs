@@ -46,13 +46,13 @@
                 PaketInstall.TryCreate(repository, out var paketInstall))
             {
                 return new Batch(
-                    new GitAssertEmptyDiff(repository.Directory),
-                    new GitAssertIsOnMaster(repository.Directory),
-                    new GitPullFastForwardOnly(repository.Directory),
-                    new GitCleanDxf(repository.Directory),
-                    replace,
-                    paketInstall,
-                    new DotnetRestore(repository.Directory));
+                      new GitAssertEmptyDiff(repository.Directory),
+                      new GitAssertIsOnMaster(repository.Directory),
+                      new GitPullFastForwardOnly(repository.Directory),
+                      new GitCleanDxf(repository.Directory),
+                      replace,
+                      paketInstall,
+                      new DotnetRestore(repository.Directory));
             }
             else
             {

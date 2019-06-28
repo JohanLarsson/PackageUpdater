@@ -89,9 +89,12 @@
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Repository.cs" />
-    <Compile Include="SyncGitInfo.cs" />
+    <Compile Include="SyncGitInfo.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tasks\AbstractCliTask.cs" />
     <Compile Include="Tasks\Paket\PaketInstall.cs" />
+    <Compile Include="Tasks\Paket\PaketOutdated.cs" />
     <Compile Include="Tasks\Paket\PaketReplace.cs" />
     <Compile Include="TaskListView.xaml.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
