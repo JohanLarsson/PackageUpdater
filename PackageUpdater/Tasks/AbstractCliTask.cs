@@ -80,6 +80,7 @@
                 this.Exception = e;
                 this.Status = Status.Error;
                 this.serialDisposable.Disposable = null;
+                tcs.SetException(e);
             }
 
             return tcs.Task;
