@@ -46,7 +46,6 @@
                     </local:TaskInfoTemplateSelector.Update>
                     <local:TaskInfoTemplateSelector.Replace>
                         <DataTemplate DataType="{x:Type local:ReplacePackageInfo}">
-
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -61,20 +60,19 @@
                                            Text="Old" />
                                 <TextBox Grid.Row="0"
                                          Grid.Column="1"
-                                         Text="{Binding TaskInfo.OldPackageId}" />
+                                         Text="{Binding OldPackageId}" />
                                 <TextBlock Grid.Row="1"
                                            Grid.Column="0"
                                            Text="New" />
                                 <TextBox Grid.Row="1"
                                          Grid.Column="1"
-                                         Text="{Binding TaskInfo.NewPackageId}" />
+                                         Text="{Binding NewPackageId}" />
                             </Grid>
                         </DataTemplate>
                     </local:TaskInfoTemplateSelector.Replace>
                 </local:TaskInfoTemplateSelector>
             </ContentPresenter.ContentTemplateSelector>
         </ContentPresenter>
-
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -91,11 +89,11 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type local:TaskViewModel}">
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Margin="0,0,4,0" Command="{Binding Task.StartCommand}">
+                                        <Button Command="{Binding Task.StartCommand}">
                                             <Button.Template>
                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                     <Border Background="Transparent">
-                                                        <ContentPresenter />
+                                                        <ContentPresenter Margin="2,0,4,0" />
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsEnabled" Value="False">
