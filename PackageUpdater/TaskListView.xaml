@@ -20,7 +20,7 @@
                 <local:TaskInfoTemplateSelector>
                     <local:TaskInfoTemplateSelector.Update>
                         <DataTemplate DataType="{x:Type local:UpdatePackageInfo}">
-                            <Grid Grid.Row="0">
+                            <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
