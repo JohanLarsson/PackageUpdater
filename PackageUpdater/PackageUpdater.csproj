@@ -85,6 +85,9 @@
     <Compile Include="ITaskInfo.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PaketOutdatedInfo.cs">
+      <DependentUpon>TaskListView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReplacePackageInfo.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
