@@ -13,9 +13,9 @@
         {
             switch (item)
             {
-                case UpdatePackageInfo _:
+                case UpdatePackageChore _:
                     return this.Update;
-                case ReplacePackageInfo _:
+                case ReplacePackageChore _:
                     return this.Replace;
                 default:
                     return base.SelectTemplate(item, container);

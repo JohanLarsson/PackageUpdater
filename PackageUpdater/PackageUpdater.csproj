@@ -82,17 +82,17 @@
     <Compile Include="DebugViewModel.cs">
       <DependentUpon>DebugProcessView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ITaskInfo.cs">
+    <Compile Include="IChoreFactory.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PaketOutdatedInfo.cs">
+    <Compile Include="PaketOutdatedChore.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ReplacePackageInfo.cs">
+    <Compile Include="ReplacePackageChore.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Repository.cs" />
-    <Compile Include="SyncGitInfo.cs">
+    <Compile Include="SyncGitChore.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tasks\AbstractCliTask.cs" />
@@ -117,7 +117,7 @@
     <Compile Include="TaskListViewModel.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UpdatePackageInfo.cs">
+    <Compile Include="UpdatePackageChore.cs">
       <DependentUpon>TaskListView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModel.cs">

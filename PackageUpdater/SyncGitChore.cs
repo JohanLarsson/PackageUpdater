@@ -2,7 +2,7 @@
 {
     using System.ComponentModel;
 
-    public class SyncGitInfo : ITaskInfo
+    public class SyncGitChore : IChoreFactory
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

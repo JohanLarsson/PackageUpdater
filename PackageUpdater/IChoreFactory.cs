@@ -2,7 +2,7 @@
 {
     using System.ComponentModel;
 
-    public interface ITaskInfo : INotifyPropertyChanged
+    public interface IChoreFactory : INotifyPropertyChanged
     {
         Batch CreateBatch(Repository repository);
     }

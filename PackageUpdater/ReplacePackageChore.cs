@@ -3,7 +3,7 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public class ReplacePackageInfo : ITaskInfo
+    public class ReplacePackageChore : IChoreFactory
     {
         private string oldPackageId;
         private string newPackageId;

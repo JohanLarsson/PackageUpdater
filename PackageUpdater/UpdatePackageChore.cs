@@ -3,7 +3,7 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public class UpdatePackageInfo : ITaskInfo
+    public class UpdatePackageChore : IChoreFactory
     {
         private string group;
         private string packageId;

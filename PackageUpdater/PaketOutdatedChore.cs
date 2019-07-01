@@ -3,11 +3,8 @@
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
-    public class PaketOutdatedInfo : ITaskInfo
+    public class PaketOutdatedChore : IChoreFactory
     {
-        private string oldPackageId;
-        private string newPackageId;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Batch CreateBatch(Repository repository)

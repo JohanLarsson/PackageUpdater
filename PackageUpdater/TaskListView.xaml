@@ -15,11 +15,11 @@
             <RowDefinition Height="*" MinHeight="200" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ContentPresenter Grid.Row="0" Content="{Binding TaskInfo}">
+        <ContentPresenter Grid.Row="0" Content="{Binding CurrentChore}">
             <ContentPresenter.ContentTemplateSelector>
                 <local:TaskInfoTemplateSelector>
                     <local:TaskInfoTemplateSelector.Update>
-                        <DataTemplate DataType="{x:Type local:UpdatePackageInfo}">
+                        <DataTemplate DataType="{x:Type local:UpdatePackageChore}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -45,7 +45,7 @@
                         </DataTemplate>
                     </local:TaskInfoTemplateSelector.Update>
                     <local:TaskInfoTemplateSelector.Replace>
-                        <DataTemplate DataType="{x:Type local:ReplacePackageInfo}">
+                        <DataTemplate DataType="{x:Type local:ReplacePackageChore}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
