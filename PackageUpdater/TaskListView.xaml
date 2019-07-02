@@ -105,7 +105,7 @@
                                             <Path x:Name="Path"
                                                   Data="{StaticResource PlayGeometry}"
                                                   Fill="{StaticResource GreenBrush}"
-                                                  Style="{StaticResource IconPathStyle}" />
+                                                  Style="{StaticResource IconStyle}" />
                                         </Button>
                                         <TextBlock Text="">
                                             <Hyperlink NavigateUri="{Binding Repository.Directory.FullName}" RequestNavigate="OnRequestNavigate">
@@ -129,6 +129,27 @@
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
                                     </ItemsControl>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="Commit">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate DataType="{x:Type local:TaskViewModel}">
+                                    <Button Command="{Binding GitExtCommitCommand}">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border Background="Transparent">
+                                                    <Grid Margin="2,0">
+                                                        <Ellipse Fill="{StaticResource GreenBrush}" Style="{StaticResource IconStyle}" />
+                                                        <Path Data="{StaticResource CheckGeometry}"
+                                                              Fill="White"
+                                                              Style="{StaticResource IconStyle}" />
+                                                    </Grid>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>

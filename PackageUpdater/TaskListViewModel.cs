@@ -33,7 +33,7 @@
 
         public IReadOnlyView<TaskViewModel> Tasks { get; }
 
-        public IChoreFactory CurrentChore { get; } = new SyncGitChore();
+        public IChoreFactory CurrentChore { get; } = new UpdatePackageChore();
 
         public TaskViewModel SelectedTask
         {

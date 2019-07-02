@@ -2,9 +2,13 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Diagnostics;
+    using System.IO;
     using System.Reactive.Linq;
     using System.Runtime.CompilerServices;
+    using System.Windows.Input;
     using Gu.Reactive;
+    using Gu.Wpf.Reactive;
 
     public sealed class TaskViewModel : INotifyPropertyChanged, IDisposable
     {
@@ -20,11 +24,25 @@
             this.disposable = taskList.CurrentChore.ObservePropertyChangedSlim()
                                       .StartWith(PropertyChangedEventArgs)
                                       .Subscribe(_ => this.Task = taskList.CurrentChore.CreateBatch(repository));
+            this.GitExtCommitCommand = new ManualRelayCommand(
+                () => Process.Start(
+                    new ProcessStartInfo
+                    {
+                        FileName = "c:\\Program Files (x86)\\GitExtensions\\gitex.cmd",
+                        Arguments = "commit",
+                        CreateNoWindow = true,
+                        UseShellExecute = true,
+                        WorkingDirectory = repository.Directory.FullName
+                    }),
+                () => File.Exists("c:\\Program Files (x86)\\GitExtensions\\gitex.cmd"));
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Repository Repository { get; }
+
+        public ICommand GitExtCommitCommand { get; }
 
         public Batch Task
         {
