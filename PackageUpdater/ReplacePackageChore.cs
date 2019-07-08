@@ -1,14 +1,16 @@
 ﻿namespace PackageUpdater
 {
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
+    using System.Collections.ObjectModel;
 
-    public class ReplacePackageChore : IChoreFactory
+    public class ReplacePackageChore : AbstractChore
     {
         private string oldPackageId;
         private string newPackageId;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public ReplacePackageChore(ReadOnlyObservableCollection<Repository> repositories)
+            : base(repositories)
+        {
+        }
 
         public string OldPackageId
         {
@@ -40,7 +42,7 @@
             }
         }
 
-        public Batch CreateBatch(Repository repository)
+        public override Batch CreateBatch(Repository repository)
         {
             if (PaketReplace.TryCreate(repository, this.OldPackageId, this.NewPackageId, out var replace) &&
                 PaketInstall.TryCreate(repository, out var paketInstall))
@@ -58,11 +60,6 @@
             {
                 return null;
             }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -1,14 +1,16 @@
 ﻿namespace PackageUpdater
 {
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
+    using System.Collections.ObjectModel;
 
-    public class UpdatePackageChore : IChoreFactory
+    public class UpdatePackageChore : AbstractChore
     {
         private string group;
         private string packageId;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public UpdatePackageChore(ReadOnlyObservableCollection<Repository> repositories)
+            : base(repositories)
+        {
+        }
 
         public string Group
         {
@@ -40,7 +42,7 @@
             }
         }
 
-        public Batch CreateBatch(Repository repository)
+        public override Batch CreateBatch(Repository repository)
         {
             if (PaketUpdate.TryCreate(repository, this.packageId, this.group, out var update))
             {
@@ -56,11 +58,6 @@
             {
                 return null;
             }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

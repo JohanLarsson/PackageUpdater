@@ -4,9 +4,9 @@
     using System.Windows.Navigation;
     using System.Diagnostics;
 
-    public partial class UpdatePackageView : UserControl
+    public partial class ChoresView : UserControl
     {
-        public UpdatePackageView()
+        public ChoresView()
         {
             this.InitializeComponent();
         }

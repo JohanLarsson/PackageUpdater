@@ -1,13 +1,15 @@
 ﻿namespace PackageUpdater
 {
-    using System.ComponentModel;
-    using System.Runtime.CompilerServices;
+    using System.Collections.ObjectModel;
 
-    public class PaketOutdatedChore : IChoreFactory
+    public class PaketOutdatedChore : AbstractChore
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public PaketOutdatedChore(ReadOnlyObservableCollection<Repository> repositories)
+            : base(repositories)
+        {
+        }
 
-        public Batch CreateBatch(Repository repository)
+        public override Batch CreateBatch(Repository repository)
         {
             if (PaketOutdated.TryCreate(repository,  out var outdated))
             {
@@ -21,11 +23,6 @@
             {
                 return null;
             }
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

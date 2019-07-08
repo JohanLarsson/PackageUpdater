@@ -17,7 +17,7 @@
         public ViewModel()
         {
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
-            this.TaskList = new TaskListViewModel(this.AllRepositories);
+            this.TaskList = new Chores(this.AllRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
         }
 
@@ -43,7 +43,7 @@
 
         public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
 
-        public TaskListViewModel TaskList { get; }
+        public Chores TaskList { get; }
 
         public DebugViewModel Debug { get; } = new DebugViewModel();
 

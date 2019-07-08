@@ -1,12 +1,15 @@
 ﻿namespace PackageUpdater
 {
-    using System.ComponentModel;
+    using System.Collections.ObjectModel;
 
-    public class SyncGitChore : IChoreFactory
+    public class SyncGitChore : AbstractChore
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public SyncGitChore(ReadOnlyObservableCollection<Repository> repositories)
+            : base(repositories)
+        {
+        }
 
-        public Batch CreateBatch(Repository repository)
+        public override Batch CreateBatch(Repository repository)
         {
             return new Batch(
                 new GitFetchOrigin(repository.Directory),

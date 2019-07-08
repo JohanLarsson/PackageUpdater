@@ -18,12 +18,12 @@
         private AbstractTask selectedStep;
         private static readonly PropertyChangedEventArgs PropertyChangedEventArgs = new PropertyChangedEventArgs(string.Empty);
 
-        public TaskViewModel(Repository repository, TaskListViewModel taskList)
+        public TaskViewModel(Repository repository, AbstractChore chore)
         {
             this.Repository = repository;
-            this.disposable = taskList.CurrentChore.ObservePropertyChangedSlim()
+            this.disposable = chore.ObservePropertyChangedSlim()
                                       .StartWith(PropertyChangedEventArgs)
-                                      .Subscribe(_ => this.Task = taskList.CurrentChore.CreateBatch(repository));
+                                      .Subscribe(_ => this.Batch = chore.CreateBatch(repository));
             this.GitExtCommitCommand = new ManualRelayCommand(
                 () => Process.Start(
                     new ProcessStartInfo
@@ -44,7 +44,7 @@
 
         public ICommand GitExtCommitCommand { get; }
 
-        public Batch Task
+        public Batch Batch
         {
             get => this.process.Disposable;
             set
