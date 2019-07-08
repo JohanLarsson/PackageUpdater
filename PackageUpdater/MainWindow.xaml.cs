@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System;
     using System.ComponentModel;
     using System.Windows;
 
@@ -13,6 +14,12 @@
             {
                 ((ViewModel) this.DataContext).GitDirectory = @"C:\Git";
             }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            Properties.Settings.Default.Save();
+            base.OnClosed(e);
         }
     }
 }

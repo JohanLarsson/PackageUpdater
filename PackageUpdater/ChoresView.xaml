@@ -166,7 +166,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding SelectedTask.Batch.Steps}" SelectedItem="{Binding SelectedTask.SelectedStep}">
+                <ListBox ItemsSource="{Binding SelectedChore.SelectedTask.Batch.Steps}" SelectedItem="{Binding SelectedChore.SelectedTask.SelectedStep}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:AbstractTask}">
                             <StackPanel Orientation="Horizontal">
@@ -182,10 +182,10 @@
                         <RowDefinition MaxHeight="200" />
                     </Grid.RowDefinitions>
                     <GroupBox Header="Output">
-                        <ItemsControl ItemsSource="{Binding SelectedTask.SelectedStep.Data}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedChore.SelectedTask.SelectedStep.Data}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Error">
-                        <ItemsControl ItemsSource="{Binding SelectedTask.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedChore.SelectedTask.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                 </Grid>
             </Grid>

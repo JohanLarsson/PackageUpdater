@@ -28,6 +28,6 @@
                     Command="{Binding BrowseForGitDirectoryCommand}"
                     Content="..." />
         </Grid>
-        <local:ChoresView Grid.Row="1" DataContext="{Binding TaskList}" />
+        <local:ChoresView Grid.Row="1" DataContext="{Binding Chores}" />
     </Grid>
 </Window>

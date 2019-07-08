@@ -84,6 +84,11 @@
       <DependentUpon>DebugProcessView.xaml</DependentUpon>
     </Compile>
     <Compile Include="PaketOutdatedChore.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ReplacePackageChore.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="SyncGitChore.cs" />
@@ -150,6 +155,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Gu.Reactive.Analyzers.0.1.3.10\analyzers\dotnet\cs\Gu.Reactive.Analyzers.dll" />

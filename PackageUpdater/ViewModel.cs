@@ -3,6 +3,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows;
     using System.Windows.Input;
@@ -11,41 +12,41 @@
     public sealed class ViewModel : INotifyPropertyChanged, System.IDisposable
     {
         private readonly ObservableCollection<Repository> allRepositories = new ObservableCollection<Repository>();
-        private string gitDirectory;
         private bool disposed;
 
         public ViewModel()
         {
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
-            this.TaskList = new Chores(this.AllRepositories);
+            this.Chores = new Chores(this.AllRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
+            this.UpdateRepositories();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand BrowseForGitDirectoryCommand { get; }
 
+        public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
+
+        public Chores Chores { get; }
+
+        public DebugViewModel Debug { get; } = new DebugViewModel();
+
         public string GitDirectory
         {
-            get => this.gitDirectory;
+            get => Properties.Settings.Default.GitDirectory;
             set
             {
-                if (value == this.gitDirectory)
+                if (value == Properties.Settings.Default.GitDirectory)
                 {
                     return;
                 }
 
-                this.gitDirectory = value;
+                Properties.Settings.Default.GitDirectory = value;
                 this.OnPropertyChanged();
                 this.UpdateRepositories();
             }
         }
-
-        public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
-
-        public Chores TaskList { get; }
-
-        public DebugViewModel Debug { get; } = new DebugViewModel();
 
         public void Dispose()
         {
@@ -55,7 +56,7 @@
             }
 
             this.disposed = true;
-            this.TaskList.Dispose();
+            this.Chores.Dispose();
             this.Debug?.Dispose();
         }
 
@@ -80,12 +81,19 @@
                 repository.Dispose();
             }
 
+            var excluded = Properties.Settings.Default.ExcludedDirectories?.Cast<string>() ??
+                           Enumerable.Empty<string>();
             this.allRepositories.Clear();
-            if (this.gitDirectory is string path &&
+            if (this.GitDirectory is string path &&
                 Directory.Exists(path))
             {
                 foreach (var directory in Directory.EnumerateDirectories(path))
                 {
+                    if (excluded.Any(x => x == Path.GetDirectoryName(directory)))
+                    {
+                        continue;
+                    }
+
                     if (Repository.TryCreate(directory, out var repository))
                     {
                         this.allRepositories.Add(repository);
