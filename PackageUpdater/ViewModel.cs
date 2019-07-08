@@ -17,7 +17,7 @@
         public ViewModel()
         {
             this.AllRepositories = new ReadOnlyObservableCollection<Repository>(this.allRepositories);
-            this.Chores = new Chores(this.AllRepositories);
+            this.ChoresViewModel = new ChoresViewModel(this.AllRepositories);
             this.BrowseForGitDirectoryCommand = new RelayCommand(() => this.BrowseForGitDirectory());
             this.UpdateRepositories();
         }
@@ -28,7 +28,7 @@
 
         public ReadOnlyObservableCollection<Repository> AllRepositories { get; }
 
-        public Chores Chores { get; }
+        public ChoresViewModel ChoresViewModel { get; }
 
         public DebugViewModel Debug { get; } = new DebugViewModel();
 
@@ -56,7 +56,7 @@
             }
 
             this.disposed = true;
-            this.Chores.Dispose();
+            this.ChoresViewModel.Dispose();
             this.Debug?.Dispose();
         }
 

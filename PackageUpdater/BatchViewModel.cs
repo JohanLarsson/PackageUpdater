@@ -4,26 +4,25 @@
     using System.ComponentModel;
     using System.Diagnostics;
     using System.IO;
+    using System.Reactive;
     using System.Reactive.Linq;
     using System.Runtime.CompilerServices;
     using System.Windows.Input;
     using Gu.Reactive;
     using Gu.Wpf.Reactive;
 
-    public sealed class TaskViewModel : INotifyPropertyChanged, IDisposable
+    public sealed class BatchViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly SerialDisposable<Batch> process = new SerialDisposable<Batch>();
         private readonly IDisposable disposable;
         private bool disposed;
-        private AbstractTask selectedStep;
-        private static readonly PropertyChangedEventArgs PropertyChangedEventArgs = new PropertyChangedEventArgs(string.Empty);
+        private AbstractTask selectedTask;
 
-        public TaskViewModel(Repository repository, AbstractChore chore)
+        public BatchViewModel(Repository repository, IObservable<object> trigger, Func<Repository, Batch> createBatch)
         {
             this.Repository = repository;
-            this.disposable = chore.ObservePropertyChangedSlim()
-                                      .StartWith(PropertyChangedEventArgs)
-                                      .Subscribe(_ => this.Batch = chore.CreateBatch(repository));
+            this.disposable = trigger.StartWith(Unit.Default)
+                                     .Subscribe(_ => this.Batch = createBatch(repository));
             this.GitExtCommitCommand = new ManualRelayCommand(
                 () => Process.Start(
                     new ProcessStartInfo
@@ -59,17 +58,17 @@
             }
         }
 
-        public AbstractTask SelectedStep
+        public AbstractTask SelectedTask
         {
-            get => this.selectedStep;
+            get => this.selectedTask;
             set
             {
-                if (ReferenceEquals(value, this.selectedStep))
+                if (ReferenceEquals(value, this.selectedTask))
                 {
                     return;
                 }
 
-                this.selectedStep = value;
+                this.selectedTask = value;
                 this.OnPropertyChanged();
             }
         }

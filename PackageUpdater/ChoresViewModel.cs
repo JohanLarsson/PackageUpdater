@@ -9,21 +9,21 @@
     using System.Windows.Input;
     using Gu.Wpf.Reactive;
 
-    public sealed class Chores : INotifyPropertyChanged, IDisposable
+    public sealed class ChoresViewModel : INotifyPropertyChanged, IDisposable
     {
         private bool disposed;
         private AbstractChore selectedChore;
 
-        public Chores(ReadOnlyObservableCollection<Repository> repositories)
+        public ChoresViewModel(ReadOnlyObservableCollection<Repository> repositories)
         {
-            this.Items = new ReadOnlyObservableCollection<AbstractChore>(
+            this.Chores = new ReadOnlyObservableCollection<AbstractChore>(
                 new ObservableCollection<AbstractChore>
                 {
                     new SyncGitChore(repositories),
                     new UpdatePackageChore(repositories),
                     new PaketOutdatedChore(repositories),
                 });
-            this.selectedChore = this.Items.First();
+            this.selectedChore = this.Chores.First();
             this.RunAllCommand = new AsyncCommand(() => this.RunAllAsync());
         }
 
@@ -31,7 +31,7 @@
 
         public ICommand RunAllCommand { get; }
 
-        public ReadOnlyObservableCollection<AbstractChore> Items { get; }
+        public ReadOnlyObservableCollection<AbstractChore> Chores { get; }
 
         public AbstractChore SelectedChore
         {
@@ -57,7 +57,7 @@
 
             this.disposed = true;
             (this.RunAllCommand as IDisposable)?.Dispose();
-            foreach (var item in this.Items)
+            foreach (var item in this.Chores)
             {
                 item.Dispose();
             }

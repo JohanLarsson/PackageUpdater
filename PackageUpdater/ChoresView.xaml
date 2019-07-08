@@ -4,7 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:PackageUpdater"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             d:DataContext="{d:DesignInstance Type=local:Chores,
+             d:DataContext="{d:DesignInstance Type=local:ChoresViewModel,
                                               IsDesignTimeCreatable=False}"
              d:DesignHeight="450"
              d:DesignWidth="800"
@@ -15,64 +15,73 @@
             <RowDefinition Height="*" MinHeight="200" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ContentPresenter Grid.Row="0" Content="{Binding SelectedChore}">
-            <ContentPresenter.ContentTemplateSelector>
-                <local:TaskInfoTemplateSelector>
-                    <local:TaskInfoTemplateSelector.Update>
-                        <DataTemplate DataType="{x:Type local:UpdatePackageChore}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Package" />
-                                <TextBox Grid.Row="0"
-                                         Grid.Column="1"
-                                         Text="{Binding PackageId}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="Group" />
-                                <TextBox Grid.Row="1"
-                                         Grid.Column="1"
-                                         Text="{Binding Group}" />
-                            </Grid>
-                        </DataTemplate>
-                    </local:TaskInfoTemplateSelector.Update>
-                    <local:TaskInfoTemplateSelector.Replace>
-                        <DataTemplate DataType="{x:Type local:ReplacePackageChore}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Row="0"
-                                           Grid.Column="0"
-                                           Text="Old" />
-                                <TextBox Grid.Row="0"
-                                         Grid.Column="1"
-                                         Text="{Binding OldPackageId}" />
-                                <TextBlock Grid.Row="1"
-                                           Grid.Column="0"
-                                           Text="New" />
-                                <TextBox Grid.Row="1"
-                                         Grid.Column="1"
-                                         Text="{Binding NewPackageId}" />
-                            </Grid>
-                        </DataTemplate>
-                    </local:TaskInfoTemplateSelector.Replace>
-                </local:TaskInfoTemplateSelector>
-            </ContentPresenter.ContentTemplateSelector>
-        </ContentPresenter>
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ComboBox Grid.Row="0"
+                      ItemsSource="{Binding Chores}"
+                      SelectedItem="{Binding SelectedChore}" />
+            <ContentPresenter Grid.Row="1" Content="{Binding SelectedChore}">
+                <ContentPresenter.ContentTemplateSelector>
+                    <local:TaskInfoTemplateSelector>
+                        <local:TaskInfoTemplateSelector.Update>
+                            <DataTemplate DataType="{x:Type local:UpdatePackageChore}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="Package" />
+                                    <TextBox Grid.Row="0"
+                                             Grid.Column="1"
+                                             Text="{Binding PackageId}" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="Group" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding Group}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:TaskInfoTemplateSelector.Update>
+                        <local:TaskInfoTemplateSelector.Replace>
+                            <DataTemplate DataType="{x:Type local:ReplacePackageChore}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Row="0"
+                                               Grid.Column="0"
+                                               Text="Old" />
+                                    <TextBox Grid.Row="0"
+                                             Grid.Column="1"
+                                             Text="{Binding OldPackageId}" />
+                                    <TextBlock Grid.Row="1"
+                                               Grid.Column="0"
+                                               Text="New" />
+                                    <TextBox Grid.Row="1"
+                                             Grid.Column="1"
+                                             Text="{Binding NewPackageId}" />
+                                </Grid>
+                            </DataTemplate>
+                        </local:TaskInfoTemplateSelector.Replace>
+                    </local:TaskInfoTemplateSelector>
+                </ContentPresenter.ContentTemplateSelector>
+            </ContentPresenter>
+        </Grid>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -87,7 +96,7 @@
                     <GridView>
                         <GridViewColumn Header="Repository">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:TaskViewModel}">
+                                <DataTemplate DataType="{x:Type local:BatchViewModel}">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Command="{Binding Batch.StartCommand}">
                                             <Button.Template>
@@ -121,7 +130,7 @@
 
                         <GridViewColumn Header="Status">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:TaskViewModel}">
+                                <DataTemplate DataType="{x:Type local:BatchViewModel}">
                                     <ItemsControl ItemTemplate="{StaticResource StatusTemplate}" ItemsSource="{Binding Batch.Steps}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
@@ -135,7 +144,7 @@
 
                         <GridViewColumn Header="Commit">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate DataType="{x:Type local:TaskViewModel}">
+                                <DataTemplate DataType="{x:Type local:BatchViewModel}">
                                     <Button Command="{Binding GitExtCommitCommand}">
                                         <Button.Template>
                                             <ControlTemplate TargetType="{x:Type Button}">
@@ -166,7 +175,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding SelectedChore.SelectedTask.Batch.Steps}" SelectedItem="{Binding SelectedChore.SelectedTask.SelectedStep}">
+                <ListBox ItemsSource="{Binding SelectedChore.SelectedTask.Batch.Steps}" SelectedItem="{Binding SelectedChore.SelectedTask.SelectedTask}">
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="{x:Type local:AbstractTask}">
                             <StackPanel Orientation="Horizontal">
@@ -182,10 +191,10 @@
                         <RowDefinition MaxHeight="200" />
                     </Grid.RowDefinitions>
                     <GroupBox Header="Output">
-                        <ItemsControl ItemsSource="{Binding SelectedChore.SelectedTask.SelectedStep.Data}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedChore.SelectedTask.SelectedTask.Data}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Error">
-                        <ItemsControl ItemsSource="{Binding SelectedChore.SelectedTask.SelectedStep.Errors}" Style="{StaticResource ConsoleStyle}" />
+                        <ItemsControl ItemsSource="{Binding SelectedChore.SelectedTask.SelectedTask.Errors}" Style="{StaticResource ConsoleStyle}" />
                     </GroupBox>
                 </Grid>
             </Grid>
@@ -198,7 +207,7 @@
             </Grid.ColumnDefinitions>
             <Button Grid.Column="1"
                     Command="{Binding RunAllCommand}"
-                    Content="Update all" />
+                    Content="Run all" />
         </Grid>
     </Grid>
 </UserControl>

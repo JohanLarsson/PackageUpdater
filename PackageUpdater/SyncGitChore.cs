@@ -1,6 +1,8 @@
 ﻿namespace PackageUpdater
 {
+    using System;
     using System.Collections.ObjectModel;
+    using System.Reactive.Linq;
 
     public class SyncGitChore : AbstractChore
     {
@@ -8,6 +10,8 @@
             : base(repositories)
         {
         }
+
+        public override IObservable<object> UpdateTrigger { get; } = Observable.Never<object>();
 
         public override Batch CreateBatch(Repository repository)
         {

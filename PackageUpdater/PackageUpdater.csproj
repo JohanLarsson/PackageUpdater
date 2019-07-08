@@ -108,10 +108,10 @@
     <Compile Include="Tasks\Git\GitAssertEmptyDiff.cs" />
     <Compile Include="Tasks\Git\GitFetchOrigin.cs" />
     <Compile Include="Tasks\Git\GitPullOrigin.cs" />
-    <Compile Include="Chores.cs">
+    <Compile Include="ChoresViewModel.cs">
       <DependentUpon>ChoresView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TaskViewModel.cs" />
+    <Compile Include="BatchViewModel.cs" />
     <Compile Include="UpdatePackageChore.cs" />
     <Compile Include="ViewModel.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

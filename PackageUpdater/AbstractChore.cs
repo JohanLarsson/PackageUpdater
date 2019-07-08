@@ -8,14 +8,14 @@
 
     public abstract class AbstractChore : INotifyPropertyChanged, IDisposable
     {
-        private TaskViewModel selectedTask;
-        private readonly MappingView<Repository, TaskViewModel> mapped;
+        private BatchViewModel selectedTask;
+        private readonly MappingView<Repository, BatchViewModel> mapped;
         private bool disposed;
 
         protected AbstractChore(ReadOnlyObservableCollection<Repository> repositories)
         {
             this.mapped = repositories.AsMappingView(
-                x => new TaskViewModel(x, this),
+                x => new BatchViewModel(x, this.UpdateTrigger, this.CreateBatch),
                 x => x.Dispose());
             this.Tasks = this.mapped.AsReadOnlyFilteredView(
                 x => x.Batch != null,
@@ -24,9 +24,11 @@
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public IReadOnlyView<TaskViewModel> Tasks { get; }
+        public IReadOnlyView<BatchViewModel> Tasks { get; }
 
-        public TaskViewModel SelectedTask
+        public abstract IObservable<object> UpdateTrigger { get; }
+
+        public BatchViewModel SelectedTask
         {
             get => this.selectedTask;
             set

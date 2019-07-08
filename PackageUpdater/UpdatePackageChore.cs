@@ -1,6 +1,9 @@
 ﻿namespace PackageUpdater
 {
+    using System;
     using System.Collections.ObjectModel;
+    using System.Reactive.Linq;
+    using Gu.Reactive;
 
     public class UpdatePackageChore : AbstractChore
     {
@@ -10,7 +13,12 @@
         public UpdatePackageChore(ReadOnlyObservableCollection<Repository> repositories)
             : base(repositories)
         {
+            this.UpdateTrigger = Observable.Merge(
+                this.ObservePropertyChangedSlim(x => x.Group, false),
+                this.ObservePropertyChangedSlim(x => x.PackageId, false));
         }
+
+        public override IObservable<object> UpdateTrigger { get; }
 
         public string Group
         {
