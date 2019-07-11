@@ -51,6 +51,7 @@
         public Repository Repository { get; }
 
         public ICommand GitExtCommitCommand { get; }
+
         public ICommand GitCheckoutResetCommand { get; }
 
         public Batch Batch

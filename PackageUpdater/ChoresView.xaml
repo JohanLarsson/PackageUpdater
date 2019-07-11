@@ -148,7 +148,7 @@
                                     <Button Command="{Binding GitExtCommitCommand}">
                                         <Button.ContextMenu>
                                             <ContextMenu DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
-                                                <MenuItem Header="Checkout reset" Command="{Binding GitCheckoutResetCommand}"/>
+                                                <MenuItem Command="{Binding GitCheckoutResetCommand}" Header="Checkout reset" />
                                             </ContextMenu>
                                         </Button.ContextMenu>
                                         <Button.Template>
