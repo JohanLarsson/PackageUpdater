@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.IO;
@@ -81,15 +82,15 @@
                 repository.Dispose();
             }
 
-            var excluded = Properties.Settings.Default.ExcludedDirectories?.Cast<string>() ??
-                           Enumerable.Empty<string>();
+            var excluded = Properties.Settings.Default.ExcludedDirectories?.Cast<string>().ToArray() ??
+                           Array.Empty<string>();
             this.allRepositories.Clear();
             if (this.GitDirectory is string path &&
                 Directory.Exists(path))
             {
                 foreach (var directory in Directory.EnumerateDirectories(path))
                 {
-                    if (excluded.Any(x => x == Path.GetDirectoryName(directory)))
+                    if (excluded.Contains(Path.GetFileName(directory)))
                     {
                         continue;
                     }
