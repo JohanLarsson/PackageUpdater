@@ -146,6 +146,11 @@
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate DataType="{x:Type local:BatchViewModel}">
                                     <Button Command="{Binding GitExtCommitCommand}">
+                                        <Button.ContextMenu>
+                                            <ContextMenu DataContext="{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget.DataContext}">
+                                                <MenuItem Header="Checkout reset" Command="{Binding GitCheckoutResetCommand}"/>
+                                            </ContextMenu>
+                                        </Button.ContextMenu>
                                         <Button.Template>
                                             <ControlTemplate TargetType="{x:Type Button}">
                                                 <Border Background="Transparent">

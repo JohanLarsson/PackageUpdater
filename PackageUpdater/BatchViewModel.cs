@@ -35,6 +35,15 @@
                     }),
                 () => File.Exists("c:\\Program Files (x86)\\GitExtensions\\gitex.cmd"));
 
+            this.GitCheckoutResetCommand = new ManualRelayCommand(
+                () => Process.Start(
+                    new ProcessStartInfo
+                    {
+                        FileName = "git.exe",
+                        Arguments = "checkout --force -B \"master\" \"origin/master\"",
+                        UseShellExecute = true,
+                        WorkingDirectory = repository.Directory.FullName
+                    }));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,6 +51,7 @@
         public Repository Repository { get; }
 
         public ICommand GitExtCommitCommand { get; }
+        public ICommand GitCheckoutResetCommand { get; }
 
         public Batch Batch
         {
