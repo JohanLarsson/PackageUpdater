@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
@@ -41,7 +42,7 @@
                 }
 
                 if (!string.IsNullOrWhiteSpace(packageId) &&
-                    !deps.Contains($"nuget {packageId}"))
+                    !deps.Contains($"nuget {packageId}", StringComparison.Ordinal))
                 {
                     result = null;
                     return false;
@@ -58,11 +59,11 @@
         public override async Task RunAsync()
         {
             await base.RunAsync().ConfigureAwait(false);
-            if (this.Data.Any(x => x.Data.Contains("paket.lock is already up-to-date")))
+            if (this.Data.Any(x => x.Data.Contains("paket.lock is already up-to-date", StringComparison.Ordinal)))
             {
                 this.Status = Status.NoChange;
             }
-            else if (this.Data.Any(x => x.Data.Contains("Locked version resolution written to")))
+            else if (this.Data.Any(x => x.Data.Contains("Locked version resolution written to", StringComparison.Ordinal)))
             {
                 this.Status = Status.Success;
             }

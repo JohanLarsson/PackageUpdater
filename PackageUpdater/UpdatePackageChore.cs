@@ -7,8 +7,8 @@
 
     public class UpdatePackageChore : AbstractChore
     {
-        private string group;
-        private string packageId;
+        private string? group;
+        private string? packageId;
 
         public UpdatePackageChore(ReadOnlyObservableCollection<Repository> repositories)
             : base(repositories)
@@ -20,7 +20,7 @@
 
         public override IObservable<object> UpdateTrigger { get; }
 
-        public string Group
+        public string? Group
         {
             get => this.group;
             set
@@ -35,7 +35,7 @@
             }
         }
 
-        public string PackageId
+        public string? PackageId
         {
             get => this.packageId;
             set

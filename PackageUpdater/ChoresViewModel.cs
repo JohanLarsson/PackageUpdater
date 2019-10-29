@@ -27,7 +27,7 @@
             this.RunAllCommand = new AsyncCommand(() => this.RunAllAsync());
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand RunAllCommand { get; }
 

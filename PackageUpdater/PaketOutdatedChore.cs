@@ -13,7 +13,7 @@
 
         public override IObservable<object> UpdateTrigger { get; } = Observable.Never<object>();
 
-        public override Batch CreateBatch(Repository repository)
+        public override Batch? CreateBatch(Repository repository)
         {
             if (PaketOutdated.TryCreate(repository, out var outdated))
             {

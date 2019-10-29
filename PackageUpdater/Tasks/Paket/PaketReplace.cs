@@ -40,8 +40,8 @@
                 repository.TryGetPaketFiles(out var dependencies, out _, out _))
             {
                 var deps = File.ReadAllText(dependencies.FullName);
-                if (!deps.Contains(oldDependency) ||
-                    deps.Contains(newDependency))
+                if (!deps.Contains(oldDependency, StringComparison.Ordinal) ||
+                    deps.Contains(newDependency, StringComparison.Ordinal))
                 {
                     update = null;
                     return false;
@@ -62,11 +62,11 @@
                     return false;
                 }
 
-                if (candidate.IndexOf(' ') < 0)
+                if (candidate.IndexOf(' ', StringComparison.Ordinal) < 0)
                 {
                     dependency = $"nuget {candidate}";
                 }
-                else if(candidate.IndexOf(' ') == candidate.IndexOf(" prerelease"))
+                else if(candidate.IndexOf(' ', StringComparison.Ordinal) == candidate.IndexOf(" prerelease", StringComparison.Ordinal))
                 {
                     dependency = $"nuget {candidate}";
                 }
@@ -113,7 +113,7 @@
                 var text = await ReadAsync(fileName).ConfigureAwait(false);
                 using (var writer = new StreamWriter(fileName, append: false))
                 {
-                    await writer.WriteAsync(text.Replace(old, @new)).ConfigureAwait(false);
+                    await writer.WriteAsync(text.Replace(old, @new, StringComparison.Ordinal)).ConfigureAwait(false);
                 }
             }
 

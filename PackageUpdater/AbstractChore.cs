@@ -8,7 +8,7 @@
 
     public abstract class AbstractChore : INotifyPropertyChanged, IDisposable
     {
-        private BatchViewModel selectedTask;
+        private BatchViewModel? selectedTask;
         private readonly MappingView<Repository, BatchViewModel> mapped;
         private bool disposed;
 
@@ -22,13 +22,13 @@
                 this.mapped.ObserveItemPropertyChangedSlim(x => x.Batch));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public IReadOnlyView<BatchViewModel> Tasks { get; }
 
         public abstract IObservable<object> UpdateTrigger { get; }
 
-        public BatchViewModel SelectedTask
+        public BatchViewModel? SelectedTask
         {
             get => this.selectedTask;
             set

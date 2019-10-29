@@ -10,7 +10,7 @@
     public sealed class Batch : AbstractTask, IDisposable
     {
         private readonly Condition canRun;
-        private AbstractTask current;
+        private AbstractTask? current;
         private bool disposed;
 
         public Batch(params AbstractTask[] steps)
@@ -28,7 +28,7 @@
 
         public override string DisplayText => string.Join(",", this.Steps.Select(x => x.DisplayText));
 
-        public AbstractTask Current
+        public AbstractTask? Current
         {
             get => this.current;
             set

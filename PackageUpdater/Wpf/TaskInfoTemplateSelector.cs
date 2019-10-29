@@ -11,15 +11,12 @@
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            switch (item)
+            return item switch
             {
-                case UpdatePackageChore _:
-                    return this.Update;
-                case ReplacePackageChore _:
-                    return this.Replace;
-                default:
-                    return base.SelectTemplate(item, container);
-            }
+                UpdatePackageChore _ => this.Update,
+                ReplacePackageChore _ => this.Replace,
+                _ => base.SelectTemplate(item, container),
+            };
         }
     }
 }

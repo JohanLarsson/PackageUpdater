@@ -23,7 +23,7 @@
             this.UpdateRepositories();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand BrowseForGitDirectoryCommand { get; }
 

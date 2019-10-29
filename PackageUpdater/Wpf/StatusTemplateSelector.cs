@@ -20,21 +20,15 @@
         {
             if (item is Status status)
             {
-                switch (status)
+                return status switch
                 {
-                    case Status.Waiting:
-                        return this.Waiting;
-                    case Status.Running:
-                        return this.Running;
-                    case Status.NoChange:
-                        return this.NoChange;
-                    case Status.Error:
-                        return this.Error;
-                    case Status.Success:
-                        return this.Success;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(item));
-                }
+                    Status.Waiting => this.Waiting,
+                    Status.Running => this.Running,
+                    Status.NoChange => this.NoChange,
+                    Status.Error => this.Error,
+                    Status.Success => this.Success,
+                    _ => throw new ArgumentOutOfRangeException(nameof(item)),
+                };
             }
 
             return base.SelectTemplate(item, container);

@@ -7,8 +7,8 @@
 
     public class ReplacePackageChore : AbstractChore
     {
-        private string oldPackageId;
-        private string newPackageId;
+        private string? oldPackageId;
+        private string? newPackageId;
 
         public ReplacePackageChore(ReadOnlyObservableCollection<Repository> repositories)
             : base(repositories)
@@ -20,7 +20,7 @@
 
         public override IObservable<object> UpdateTrigger { get; }
 
-        public string OldPackageId
+        public string? OldPackageId
         {
             get => this.oldPackageId;
             set
@@ -35,7 +35,7 @@
             }
         }
 
-        public string NewPackageId
+        public string? NewPackageId
         {
             get => this.newPackageId;
             set
@@ -50,7 +50,7 @@
             }
         }
 
-        public override Batch CreateBatch(Repository repository)
+        public override Batch? CreateBatch(Repository repository)
         {
             if (PaketReplace.TryCreate(repository, this.OldPackageId, this.NewPackageId, out var replace) &&
                 PaketInstall.TryCreate(repository, out var paketInstall))

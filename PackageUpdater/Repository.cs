@@ -16,9 +16,9 @@
         {
             this.Directory = directory;
             this.SolutionFiles = new ReadOnlyObservableCollection<FileInfo>(new ObservableCollection<FileInfo>(directory.EnumerateFiles("*.sln", SearchOption.TopDirectoryOnly)));
-            this.DotnetRestore = new DotnetRestore(this.Directory);
-            this.EmptyDiff = new GitAssertEmptyDiff(this.Directory);
-            this.IsOnMaster = new GitAssertIsOnMaster(this.Directory);
+            this.DotnetRestore = new DotnetRestore(directory);
+            this.EmptyDiff = new GitAssertEmptyDiff(directory);
+            this.IsOnMaster = new GitAssertIsOnMaster(directory);
             InitializeAsync();
             async void InitializeAsync()
             {
@@ -34,7 +34,7 @@
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public DirectoryInfo Directory { get; }
 

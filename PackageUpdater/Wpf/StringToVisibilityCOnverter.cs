@@ -6,7 +6,7 @@
     [ValueConversion(typeof(string), typeof(Visibility))]
     public class StringToVisibilityConverter : IValueConverter
     {
-        public static StringToVisibilityConverter CollapsedWhenEmpty = new StringToVisibilityConverter(Visibility.Visible, Visibility.Collapsed);
+        public static readonly StringToVisibilityConverter CollapsedWhenEmpty = new StringToVisibilityConverter(Visibility.Visible, Visibility.Collapsed);
 
         private readonly Visibility whenNotEmpty;
         private readonly Visibility whenEmpty;

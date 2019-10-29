@@ -16,7 +16,7 @@
         private readonly SerialDisposable<Batch> process = new SerialDisposable<Batch>();
         private readonly IDisposable disposable;
         private bool disposed;
-        private AbstractTask selectedTask;
+        private AbstractTask? selectedTask;
 
         public BatchViewModel(Repository repository, IObservable<object> trigger, Func<Repository, Batch> createBatch)
         {
@@ -46,7 +46,7 @@
                     }));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public Repository Repository { get; }
 
@@ -69,7 +69,7 @@
             }
         }
 
-        public AbstractTask SelectedTask
+        public AbstractTask? SelectedTask
         {
             get => this.selectedTask;
             set
@@ -96,7 +96,7 @@
             this.disposable?.Dispose();
         }
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
