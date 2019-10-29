@@ -12,7 +12,7 @@
     public sealed class ChoresViewModel : INotifyPropertyChanged, IDisposable
     {
         private bool disposed;
-        private AbstractChore selectedChore;
+        private AbstractChore? selectedChore;
 
         public ChoresViewModel(ReadOnlyObservableCollection<Repository> repositories)
         {
@@ -33,7 +33,7 @@
 
         public ReadOnlyObservableCollection<AbstractChore> Chores { get; }
 
-        public AbstractChore SelectedChore
+        public AbstractChore? SelectedChore
         {
             get => this.selectedChore;
             set
@@ -63,7 +63,7 @@
             }
         }
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -72,7 +72,7 @@
         {
             if (this.SelectedChore is AbstractChore chore)
             {
-                await Task.WhenAll(chore.Tasks.Select(x => x.Batch.RunAsync()));
+                await Task.WhenAll(chore.Tasks.Select(x => x.Batch.RunAsync())).ConfigureAwait(false);
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿namespace PackageUpdater
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
@@ -30,7 +31,7 @@
 
         public override string DisplayText { get; }
 
-        public static bool TryCreate(Repository repository, string oldDependency, string newDependency, out PaketReplace update)
+        public static bool TryCreate(Repository repository, string oldDependency, string newDependency, [NotNullWhen(true)] out PaketReplace? update)
         {
             if (TryGetDependency(oldDependency, out oldDependency) &&
                 TryGetReference(oldDependency, out var oldReference) &&
@@ -95,7 +96,7 @@
         {
             this.ThrowIfDisposed();
             this.Status = Status.Running;
-            await ReplaceAsync(this.dependencies.FullName, this.oldDependency, this.newDependency);
+            await ReplaceAsync(this.dependencies.FullName, this.oldDependency, this.newDependency).ConfigureAwait(false);
 
             foreach (var subDir in this.dependencies.Directory.EnumerateDirectories())
             {
@@ -110,9 +111,9 @@
             async Task ReplaceAsync(string fileName, string old, string @new)
             {
                 var text = await ReadAsync(fileName).ConfigureAwait(false);
-                using (var writer = new StreamWriter(fileName, false))
+                using (var writer = new StreamWriter(fileName, append: false))
                 {
-                    await writer.WriteAsync(text.Replace(old, @new));
+                    await writer.WriteAsync(text.Replace(old, @new)).ConfigureAwait(false);
                 }
             }
 

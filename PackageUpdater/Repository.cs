@@ -3,6 +3,7 @@
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
@@ -45,7 +46,7 @@
 
         public GitAssertIsOnMaster IsOnMaster { get; }
 
-        public static bool TryCreate(string directory, out Repository repository)
+        public static bool TryCreate(string directory, [NotNullWhen(true)] out Repository? repository)
         {
             if (System.IO.Directory.EnumerateDirectories(directory, ".git").Any())
             {
@@ -57,7 +58,7 @@
             return false;
         }
 
-        public bool TryGetPaketFiles(out FileInfo dependencies, out FileInfo @lock, out FileInfo paketExe)
+        public bool TryGetPaketFiles([NotNullWhen(true)] out FileInfo? dependencies, [NotNullWhen(true)] out FileInfo? @lock, [NotNullWhen(true)] out FileInfo? paketExe)
         {
             if (this.Directory.EnumerateFiles("paket.dependencies").FirstOrDefault() is FileInfo deps &&
                 this.Directory.EnumerateDirectories(".paket").FirstOrDefault() is DirectoryInfo paketDir &&
@@ -88,7 +89,7 @@
             this.IsOnMaster.Dispose();
         }
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

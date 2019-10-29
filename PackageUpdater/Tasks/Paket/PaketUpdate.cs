@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -21,7 +22,7 @@
 
         public string Group { get; }
 
-        public static bool TryCreate(Repository repository, string packageId, string group, out PaketUpdate result)
+        public static bool TryCreate(Repository repository, string packageId, string group, [NotNullWhen(true)] out PaketUpdate? result)
         {
             if (repository.TryGetPaketFiles(out var dependencies, out _, out var paketExe))
             {

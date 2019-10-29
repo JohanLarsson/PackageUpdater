@@ -6,7 +6,7 @@
     using System.Windows.Media;
     using System.Windows.Shapes;
 
-    [ValueConversion(typeof(bool), typeof(Geometry))]
+    [ValueConversion(typeof(bool), typeof(Shape))]
     [MarkupExtensionReturnType(typeof(BooleanToPathConverter))]
     public class BooleanToPathConverter : MarkupExtension, IValueConverter
     {
@@ -16,12 +16,9 @@
         
         public Shape WhenNull { get; set; }
 
-        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new System.NotImplementedException();
-        }
+        public override object ProvideValue(IServiceProvider serviceProvider) => this;
 
-        object IValueConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is bool b)
             {
@@ -31,9 +28,9 @@
             return this.WhenNull;
         }
 
-        public override object ProvideValue(IServiceProvider serviceProvider)
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return this;
+            throw new NotSupportedException($"{nameof(BooleanToPathConverter)} can only be used in OneWay bindings");
         }
     }
 }

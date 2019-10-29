@@ -58,7 +58,7 @@
                 this.Current = step;
                 try
                 {
-                    await step.RunAsync();
+                    await step.RunAsync().ConfigureAwait(false);
                     if (step.Status == Status.Error)
                     {
                         this.Status = Status.Error;

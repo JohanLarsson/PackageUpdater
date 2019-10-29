@@ -15,7 +15,7 @@
 
         public override Batch CreateBatch(Repository repository)
         {
-            if (PaketOutdated.TryCreate(repository,  out var outdated))
+            if (PaketOutdated.TryCreate(repository, out var outdated))
             {
                 return new Batch(
                     new GitAssertEmptyDiff(repository.Directory),

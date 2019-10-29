@@ -33,7 +33,7 @@
                     case Status.Success:
                         return this.Success;
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(nameof(item));
                 }
             }
 

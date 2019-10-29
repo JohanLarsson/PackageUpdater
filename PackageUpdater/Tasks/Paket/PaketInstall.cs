@@ -1,5 +1,6 @@
 ﻿namespace PackageUpdater
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
 
     public class PaketInstall : AbstractCliTask
@@ -9,7 +10,7 @@
         {
         }
 
-        public static bool TryCreate(Repository repository, out PaketInstall result)
+        public static bool TryCreate(Repository repository, [NotNullWhen(true)] out PaketInstall? result)
         {
             if (repository.TryGetPaketFiles(out _, out _, out var paketExe))
             {

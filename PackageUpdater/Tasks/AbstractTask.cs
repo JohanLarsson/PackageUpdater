@@ -8,16 +8,16 @@
 
     public abstract class AbstractTask : INotifyPropertyChanged
     {
-        private Exception exception;
+        private Exception? exception;
         private Status status = Status.Waiting;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public abstract AsyncCommand StartCommand { get; }
 
         public abstract string DisplayText { get; }
 
-        public Exception Exception
+        public Exception? Exception
         {
             get => this.exception;
             protected set
@@ -54,7 +54,7 @@
 
         public abstract Task RunAsync();
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
