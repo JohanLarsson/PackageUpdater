@@ -6,17 +6,17 @@
 
     public class StatusTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate Waiting { get; set; }
+        public DataTemplate? Waiting { get; set; }
        
-        public DataTemplate Running { get; set; }
+        public DataTemplate? Running { get; set; }
         
-        public DataTemplate NoChange { get; set; }
+        public DataTemplate? NoChange { get; set; }
         
-        public DataTemplate Error { get; set; }
+        public DataTemplate? Error { get; set; }
         
-        public DataTemplate Success { get; set; }
+        public DataTemplate? Success { get; set; }
 
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
             if (item is Status status)
             {

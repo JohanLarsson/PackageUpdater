@@ -5,11 +5,11 @@
 
     public class TaskInfoTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate Update { get; set; }
+        public DataTemplate? Update { get; set; }
 
-        public DataTemplate Replace { get; set; }
+        public DataTemplate? Replace { get; set; }
 
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
             return item switch
             {
