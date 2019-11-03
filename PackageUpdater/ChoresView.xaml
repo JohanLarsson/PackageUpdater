@@ -117,7 +117,7 @@
                                                   Style="{StaticResource IconStyle}" />
                                         </Button>
                                         <TextBlock Text="">
-                                            <Hyperlink NavigateUri="{Binding Repository.Directory.FullName}" RequestNavigate="OnRequestNavigate">
+                                            <Hyperlink NavigateUri="{Binding Repository.SolutionFiles[0].FullName}" RequestNavigate="OnRequestNavigate">
                                                 <Hyperlink.Inlines>
                                                     <Run Text="{Binding Repository.Directory.FullName, Mode=OneWay}" />
                                                 </Hyperlink.Inlines>

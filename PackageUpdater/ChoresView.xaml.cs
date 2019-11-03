@@ -13,7 +13,7 @@
 
         private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri))?.Dispose();
+            Process.Start(new ProcessStartInfo(e.Uri.LocalPath))?.Dispose();
             e.Handled = true;
         }
     }
