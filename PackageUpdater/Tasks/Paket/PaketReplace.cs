@@ -31,7 +31,7 @@
 
         public override string DisplayText { get; }
 
-        public static bool TryCreate(Repository repository, string oldDependency, string newDependency, [NotNullWhen(true)] out PaketReplace? update)
+        public static bool TryCreate(Repository repository, string? oldDependency, string? newDependency, [NotNullWhen(true)] out PaketReplace? update)
         {
             if (TryGetDependency(oldDependency, out oldDependency) &&
                 TryGetReference(oldDependency, out var oldReference) &&
@@ -39,9 +39,9 @@
                 TryGetReference(newDependency, out var newReference) &&
                 repository.TryGetPaketFiles(out var dependencies, out _, out _))
             {
-                var deps = File.ReadAllText(dependencies.FullName);
-                if (!deps.Contains(oldDependency, StringComparison.Ordinal) ||
-                    deps.Contains(newDependency, StringComparison.Ordinal))
+                var dependenciesText = File.ReadAllText(dependencies.FullName);
+                if (!dependenciesText.Contains(oldDependency, StringComparison.Ordinal) ||
+                    dependenciesText.Contains(newDependency, StringComparison.Ordinal))
                 {
                     update = null;
                     return false;
@@ -54,11 +54,11 @@
             update = null;
             return false;
 
-            bool TryGetDependency(string candidate, out string dependency)
+            static bool TryGetDependency(string? candidate, out string dependency)
             {
                 if (string.IsNullOrWhiteSpace(candidate))
                 {
-                    dependency = null;
+                    dependency = null!;
                     return false;
                 }
 
@@ -78,7 +78,7 @@
                 return true;
             }
 
-            bool TryGetReference(string dependency, out string reference)
+            static bool TryGetReference(string dependency, out string reference)
             {
                 var parts = dependency.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 1)
@@ -87,7 +87,7 @@
                     return true;
                 }
 
-                reference = null;
+                reference = null!;
                 return false;
             }
         }
@@ -100,7 +100,7 @@
 
             foreach (var subDir in this.dependencies.Directory.EnumerateDirectories())
             {
-                if (subDir.EnumerateFiles("paket.references").FirstOrDefault() is FileInfo references)
+                if (subDir.EnumerateFiles("paket.references").FirstOrDefault() is { } references)
                 {
                     await ReplaceAsync(references.FullName, this.oldReference, this.newReference).ConfigureAwait(false);
                 }
@@ -108,7 +108,7 @@
 
             this.Status = Status.Success;
 
-            async Task ReplaceAsync(string fileName, string old, string @new)
+            static async Task ReplaceAsync(string fileName, string old, string @new)
             {
                 var text = await ReadAsync(fileName).ConfigureAwait(false);
                 using (var writer = new StreamWriter(fileName, append: false))
@@ -117,7 +117,7 @@
                 }
             }
 
-            async Task<string> ReadAsync(string fileName)
+            static async Task<string> ReadAsync(string fileName)
             {
                 using (var reader = File.OpenText(fileName))
                 {

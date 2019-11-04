@@ -4,14 +4,14 @@
     using System.Windows.Data;
 
     [ValueConversion(typeof(string), typeof(Visibility))]
-    public class StringToVisibilityCOnverter : IValueConverter
+    public sealed class StringToVisibilityConverter_ : IValueConverter
     {
-        public static readonly StringToVisibilityCOnverter CollapsedWhenEmpty = new StringToVisibilityCOnverter(Visibility.Visible, Visibility.Collapsed);
+        public static readonly StringToVisibilityConverter_ CollapsedWhenEmpty = new StringToVisibilityConverter_(Visibility.Visible, Visibility.Collapsed);
 
         private readonly Visibility whenNotEmpty;
         private readonly Visibility whenEmpty;
 
-        public StringToVisibilityCOnverter(Visibility whenNotEmpty, Visibility whenEmpty)
+        public StringToVisibilityConverter_(Visibility whenNotEmpty, Visibility whenEmpty)
         {
             this.whenNotEmpty = whenNotEmpty;
             this.whenEmpty = whenEmpty;
@@ -23,7 +23,7 @@
 
         object IValueConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new System.NotSupportedException($"{nameof(StringToVisibilityCOnverter)} can only be used in OneWay bindings");
+            throw new System.NotSupportedException($"{nameof(StringToVisibilityConverter_)} can only be used in OneWay bindings");
         }
     }
 }

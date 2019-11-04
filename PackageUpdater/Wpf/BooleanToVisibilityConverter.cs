@@ -4,7 +4,7 @@
     using System.Windows.Data;
 
     [ValueConversion(typeof(bool), typeof(Visibility))]
-    public class BooleanToVisibilityConverter : IValueConverter
+    public sealed class BooleanToVisibilityConverter : IValueConverter
     {
         public static readonly BooleanToVisibilityConverter CollapsedWhenFalse = new BooleanToVisibilityConverter(Visibility.Visible, Visibility.Collapsed, Visibility.Collapsed);
 
@@ -18,6 +18,7 @@
             this.whenFalse = whenFalse;
             this.whenNull = whenNull;
         }
+
         public object Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value is bool b)
