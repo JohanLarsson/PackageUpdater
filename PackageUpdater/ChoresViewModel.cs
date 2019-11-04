@@ -70,17 +70,9 @@
 
         private async Task RunAllAsync()
         {
-            if (this.SelectedChore is AbstractChore chore)
+            if (this.SelectedChore is { } chore)
             {
                 await Task.WhenAll(chore.Tasks.Select(x => x.Batch.RunAsync())).ConfigureAwait(false);
-            }
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

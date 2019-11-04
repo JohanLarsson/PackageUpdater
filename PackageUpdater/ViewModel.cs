@@ -85,7 +85,7 @@
             var excluded = Properties.Settings.Default.ExcludedDirectories?.Cast<string>().ToArray() ??
                            Array.Empty<string>();
             this.allRepositories.Clear();
-            if (this.GitDirectory is string path &&
+            if (this.GitDirectory is { } path &&
                 Directory.Exists(path))
             {
                 foreach (var directory in Directory.EnumerateDirectories(path))
@@ -110,14 +110,6 @@
                         }
                     }
                 }
-            }
-        }
-
-        private void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new System.ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

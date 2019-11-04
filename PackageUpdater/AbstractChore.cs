@@ -43,7 +43,7 @@
             }
         }
 
-        public abstract Batch CreateBatch(Repository repository);
+        public abstract Batch? CreateBatch(Repository repository);
 
         public void Dispose()
         {

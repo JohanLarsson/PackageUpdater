@@ -9,7 +9,7 @@
 
     public class PaketUpdate : AbstractCliTask
     {
-        private PaketUpdate(Repository repository, FileInfo paketExe, string packageId, string group)
+        private PaketUpdate(Repository repository, FileInfo paketExe, string? packageId, string? group)
             : base(
                 paketExe.FullName,
                 $"update" + (string.IsNullOrWhiteSpace(packageId) ? string.Empty : $" {packageId}") + (string.IsNullOrWhiteSpace(group) ? string.Empty : $" --group {group}"),
@@ -19,11 +19,11 @@
             this.Group = group;
         }
 
-        public string PackageId { get; }
+        public string? PackageId { get; }
 
-        public string Group { get; }
+        public string? Group { get; }
 
-        public static bool TryCreate(Repository repository, string packageId, string group, [NotNullWhen(true)] out PaketUpdate? result)
+        public static bool TryCreate(Repository repository, string? packageId, string? group, [NotNullWhen(true)] out PaketUpdate? result)
         {
             if (repository.TryGetPaketFiles(out var dependencies, out _, out var paketExe))
             {
@@ -33,16 +33,16 @@
                     return true;
                 }
 
-                var deps = File.ReadAllText(dependencies.FullName);
+                var dependenciesText = File.ReadAllText(dependencies.FullName);
                 if (!string.IsNullOrWhiteSpace(group) &&
-                    !Regex.IsMatch(deps, $"^ *group {group} *\r?\n", RegexOptions.Multiline))
+                    !Regex.IsMatch(dependenciesText, $"^ *group {group} *\r?\n", RegexOptions.Multiline))
                 {
                     result = null;
                     return false;
                 }
 
                 if (!string.IsNullOrWhiteSpace(packageId) &&
-                    !deps.Contains($"nuget {packageId}", StringComparison.Ordinal))
+                    !dependenciesText.Contains($"nuget {packageId}", StringComparison.Ordinal))
                 {
                     result = null;
                     return false;

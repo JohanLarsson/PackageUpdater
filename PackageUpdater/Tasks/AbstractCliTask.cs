@@ -85,23 +85,23 @@
 
             return tcs.Task;
 
-            void OnDataReceived(object sender, DataReceivedEventArgs e)
+            void OnDataReceived(object? sender, DataReceivedEventArgs e)
             {
                 if (e.Data != null)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.data.Add(e)), DispatcherPriority.Normal);
+                    _ = Application.Current.Dispatcher.BeginInvoke(new Action(() => this.data.Add(e)), DispatcherPriority.Normal);
                 }
             }
 
-            void OnErrorReceived(object sender, DataReceivedEventArgs e)
+            void OnErrorReceived(object? sender, DataReceivedEventArgs e)
             {
                 if (e.Data != null)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(new Action(() => this.errors.Add(e)), DispatcherPriority.Normal);
+                    _ = Application.Current.Dispatcher.BeginInvoke(new Action(() => this.errors.Add(e)), DispatcherPriority.Normal);
                 }
             }
 
-            void OnProcessOnExited(object sender, EventArgs e)
+            void OnProcessOnExited(object? sender, EventArgs e)
             {
                 // Huge hack below to make sure all events are in collections before exiting.
                 Application.Current.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
@@ -139,14 +139,6 @@
             {
                 this.StartCommand.Dispose();
                 this.serialDisposable.Dispose();
-            }
-        }
-
-        protected virtual void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new ObjectDisposedException(this.GetType().FullName);
             }
         }
     }

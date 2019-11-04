@@ -5,13 +5,13 @@
 
     public class BoolTemplateSelector : DataTemplateSelector
     {
-        public DataTemplate WhenTrue { get; set; }
+        public DataTemplate? WhenTrue { get; set; }
 
-        public DataTemplate WhenFalse { get; set; }
+        public DataTemplate? WhenFalse { get; set; }
         
-        public DataTemplate WhenNull { get; set; }
+        public DataTemplate? WhenNull { get; set; }
 
-        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        public override DataTemplate? SelectTemplate(object item, DependencyObject container)
         {
             if (item is bool b)
             {

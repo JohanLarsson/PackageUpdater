@@ -14,8 +14,8 @@
             : base(repositories)
         {
             this.UpdateTrigger = Observable.Merge(
-                this.ObservePropertyChangedSlim(x => x.OldPackageId, false),
-                this.ObservePropertyChangedSlim(x => x.NewPackageId, false));
+                this.ObservePropertyChangedSlim(x => x.OldPackageId, signalInitial: false),
+                this.ObservePropertyChangedSlim(x => x.NewPackageId, signalInitial: false));
         }
 
         public override IObservable<object> UpdateTrigger { get; }

@@ -23,13 +23,5 @@
             this.DotnetRestore?.Dispose();
             this.AssertEmptyDiff?.Dispose();
         }
-
-        private void ThrowIfDisposed()
-        {
-            if (this.disposed)
-            {
-                throw new System.ObjectDisposedException(this.GetType().FullName);
-            }
-        }
     }
 }

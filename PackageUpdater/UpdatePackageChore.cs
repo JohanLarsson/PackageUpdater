@@ -14,8 +14,8 @@
             : base(repositories)
         {
             this.UpdateTrigger = Observable.Merge(
-                this.ObservePropertyChangedSlim(x => x.Group, false),
-                this.ObservePropertyChangedSlim(x => x.PackageId, false));
+                this.ObservePropertyChangedSlim(x => x.Group, signalInitial: false),
+                this.ObservePropertyChangedSlim(x => x.PackageId, signalInitial: false));
         }
 
         public override IObservable<object> UpdateTrigger { get; }
@@ -50,7 +50,7 @@
             }
         }
 
-        public override Batch CreateBatch(Repository repository)
+        public override Batch? CreateBatch(Repository repository)
         {
             if (PaketUpdate.TryCreate(repository, this.packageId, this.group, out var update))
             {
