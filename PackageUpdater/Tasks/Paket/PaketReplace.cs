@@ -111,18 +111,14 @@
             static async Task ReplaceAsync(string fileName, string old, string @new)
             {
                 var text = await ReadAsync(fileName).ConfigureAwait(false);
-                using (var writer = new StreamWriter(fileName, append: false))
-                {
-                    await writer.WriteAsync(text.Replace(old, @new, StringComparison.Ordinal)).ConfigureAwait(false);
-                }
+                using var writer = new StreamWriter(fileName, append: false);
+                await writer.WriteAsync(text.Replace(old, @new, StringComparison.Ordinal)).ConfigureAwait(false);
             }
 
             static async Task<string> ReadAsync(string fileName)
             {
-                using (var reader = File.OpenText(fileName))
-                {
-                    return await reader.ReadToEndAsync().ConfigureAwait(false);
-                }
+                using var reader = File.OpenText(fileName);
+                return await reader.ReadToEndAsync().ConfigureAwait(false);
             }
         }
 

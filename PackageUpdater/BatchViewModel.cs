@@ -18,7 +18,7 @@
         private bool disposed;
         private AbstractTask? selectedTask;
 
-        public BatchViewModel(Repository repository, IObservable<object> trigger, Func<Repository, Batch> createBatch)
+        public BatchViewModel(Repository repository, IObservable<object> trigger, Func<Repository, Batch?> createBatch)
         {
             this.Repository = repository;
             this.disposable = trigger.StartWith(Unit.Default)
