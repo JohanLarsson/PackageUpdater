@@ -60,9 +60,9 @@
 
         public bool TryGetPaketFiles([NotNullWhen(true)] out FileInfo? dependencies, [NotNullWhen(true)] out FileInfo? @lock, [NotNullWhen(true)] out FileInfo? paketExe)
         {
-            if (this.Directory.EnumerateFiles("paket.dependencies").FirstOrDefault() is FileInfo deps &&
-                this.Directory.EnumerateDirectories(".paket").FirstOrDefault() is DirectoryInfo paketDir &&
-                paketDir.EnumerateFiles("paket.exe").FirstOrDefault() is FileInfo exe)
+            if (this.Directory.EnumerateFiles("paket.dependencies").FirstOrDefault() is { } deps &&
+                this.Directory.EnumerateDirectories(".paket").FirstOrDefault() is { } paketDir &&
+                paketDir.EnumerateFiles("paket.exe").FirstOrDefault() is { } exe)
             {
                 dependencies = deps;
                 @lock = this.Directory.EnumerateFiles("paket.lock").FirstOrDefault();
