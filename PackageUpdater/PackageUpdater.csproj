@@ -5,15 +5,12 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
-    <CodeAnalysisRuleSet>PackageUpdater.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
-  <!--
+  
   <PropertyGroup>
     <PublishSingleFile>true</PublishSingleFile>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>-->
-  
+  </PropertyGroup>
 
   <PropertyGroup>
     <Authors>Johan Larsson</Authors>

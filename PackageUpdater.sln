@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageUpdater", "PackageUpdater\PackageUpdater.csproj", "{BC695954-02DF-4B32-9D05-057FBD63F2A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageUpdater", "PackageUpdater\PackageUpdater.csproj", "{BC695954-02DF-4B32-9D05-057FBD63F2A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sln", ".sln", "{ADA6CFC3-DADA-4E99-BFAF-6453072969C6}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		README.md = README.md
+		Settings.XamlStyler = Settings.XamlStyler
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
