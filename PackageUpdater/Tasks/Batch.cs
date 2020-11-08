@@ -98,7 +98,7 @@
             this.disposed = true;
             this.canRun.Dispose();
             this.StartCommand.Dispose();
-            foreach (var step in Steps)
+            foreach (var step in this.Steps)
             {
                 (step as IDisposable)?.Dispose();
             }
