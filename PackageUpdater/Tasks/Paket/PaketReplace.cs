@@ -1,4 +1,4 @@
-﻿namespace PackageUpdater
+namespace PackageUpdater
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -98,7 +98,7 @@
             this.Status = Status.Running;
             await ReplaceAsync(this.dependencies.FullName, this.oldDependency, this.newDependency).ConfigureAwait(false);
 
-            foreach (var subDir in this.dependencies.Directory.EnumerateDirectories())
+            foreach (var subDir in this.dependencies.Directory!.EnumerateDirectories())
             {
                 if (subDir.EnumerateFiles("paket.references").FirstOrDefault() is { } references)
                 {
@@ -111,7 +111,7 @@
             static async Task ReplaceAsync(string fileName, string old, string @new)
             {
                 var text = await ReadAsync(fileName).ConfigureAwait(false);
-                using var writer = new StreamWriter(fileName, append: false);
+                await using var writer = new StreamWriter(fileName, append: false);
                 await writer.WriteAsync(text.Replace(old, @new, StringComparison.Ordinal)).ConfigureAwait(false);
             }
 
