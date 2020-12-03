@@ -26,7 +26,7 @@
     <PackageReference Include="Gu.Wpf.Reactive" Version="4.3.0" />
     <PackageReference Include="IDisposableAnalyzers" Version="3.4.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" PrivateAssets="all" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.0.1" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
     <PackageReference Include="PropertyChangedAnalyzers" PrivateAssets="all" Version="3.2.1" />
     <PackageReference Include="WpfAnalyzers" PrivateAssets="all" Version="3.5.2" />
   </ItemGroup>
