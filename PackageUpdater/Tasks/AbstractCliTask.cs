@@ -1,4 +1,4 @@
-﻿namespace PackageUpdater
+namespace PackageUpdater
 {
     using System;
     using System.Collections.ObjectModel;
@@ -14,7 +14,7 @@
 
     public abstract class AbstractCliTask : AbstractTask, IDisposable
     {
-        private readonly SerialDisposable<Process?> serialDisposable = new SerialDisposable<Process?>();
+        private readonly SerialDisposable<Process> serialDisposable = new SerialDisposable<Process>();
         private readonly ObservableCollection<DataReceivedEventArgs> data = new ObservableCollection<DataReceivedEventArgs>();
         private readonly ObservableCollection<DataReceivedEventArgs> errors = new ObservableCollection<DataReceivedEventArgs>();
         private bool disposed;
