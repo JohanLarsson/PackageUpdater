@@ -1,4 +1,4 @@
-﻿namespace PackageUpdater
+namespace PackageUpdater
 {
     using System.Windows;
     using System.Windows.Controls;
@@ -18,7 +18,7 @@
                 return b ? this.WhenTrue : this.WhenFalse;
             }
 
-            return item == null ? this.WhenNull : base.SelectTemplate(item, container);
+            return item is null ? this.WhenNull : base.SelectTemplate(item, container);
         }
     }
 }
