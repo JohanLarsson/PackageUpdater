@@ -8,6 +8,8 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
 	  <ApplicationManifest>App.manifest</ApplicationManifest>
+	  <EmbedAllSources>true</EmbedAllSources>
+	  <DebugType>embedded</DebugType>
   </PropertyGroup>
   
   <PropertyGroup>
