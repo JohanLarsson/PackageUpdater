@@ -39,6 +39,6 @@
     <PackageReference Include="IDisposableAnalyzers" Version="4.0.1" PrivateAssets="all" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="PropertyChangedAnalyzers" PrivateAssets="all" Version="4.0.0" />
-    <PackageReference Include="WpfAnalyzers" PrivateAssets="all" Version="4.0.0" />
+    <PackageReference Include="WpfAnalyzers" PrivateAssets="all" Version="4.0.1" />
   </ItemGroup>
 </Project>
