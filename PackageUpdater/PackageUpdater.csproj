@@ -37,7 +37,7 @@
     <PackageReference Include="Gu.Reactive.Analyzers" Version="5.0.1" PrivateAssets="all" />
     <PackageReference Include="Gu.Wpf.Reactive" Version="5.0.1" />
     <PackageReference Include="IDisposableAnalyzers" Version="4.0.1" PrivateAssets="all" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageReference Include="PropertyChangedAnalyzers" PrivateAssets="all" Version="4.0.0" />
     <PackageReference Include="WpfAnalyzers" PrivateAssets="all" Version="4.0.0" />
   </ItemGroup>
